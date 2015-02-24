@@ -77,7 +77,6 @@
     <ClInclude Include="Point.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="Sphere.h" />
-    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Line.cpp" />
@@ -86,7 +85,6 @@
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
