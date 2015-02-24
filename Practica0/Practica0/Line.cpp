@@ -23,6 +23,6 @@ float Line::distPointToLine(const Point &q) {
 	return glm::length(glm::cross((q.coord - p.coord), direction)) / glm::length(direction);
 }
 
-void Line::calcAlfa(Point q, Plane p){
-	alfa = (-p.d - ((p.norm.x*q.coord.x) + (p.norm.y*q.coord.y) + (p.norm.z*q.coord.z))) / ((p.norm.x*direction.x) + (p.norm.y*direction.y) + (p.norm.z*direction.z));
+void Line::calcAlfa(Plane plane){
+	alfa = (-plane.d - ((plane.norm.x*p.coord.x) + (plane.norm.y*p.coord.y) + (plane.norm.z*p.coord.z))) / ((plane.norm.x*direction.x) + (plane.norm.y*direction.y) + (plane.norm.z*direction.z));
 }

@@ -14,6 +14,6 @@ public:
 	void setPointLine(const float &x, const float &y, const float &z);
 	void setDirectionLine(const float &x, const float &y, const float &z);
 	float distPointToLine(const Point &q);
-	void calcAlfa(Point, Plane);
+	void calcAlfa(Plane);
 };
 
