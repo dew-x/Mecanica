@@ -1,8 +1,9 @@
 #include "Line.h"
 
 
-Line::Line() : direction(0.0f, 0.0f, 0.0f)
-{		
+Line::Line(Point point, glm::vec3 direc){
+	p = point;
+	direction = direc;
 }
 
 
@@ -20,4 +21,8 @@ void Line::setDirectionLine(const float &x, const float &y, const float &z) {
 
 float Line::distPointToLine(const Point &q) {
 	return glm::length(glm::cross((q.coord - p.coord), direction)) / glm::length(direction);
+}
+
+void Line::calcAlfa(Point q, Plane p){
+	alfa = (-p.d - ((p.norm.x*q.coord.x) + (p.norm.y*q.coord.y) + (p.norm.z*q.coord.z))) / ((p.norm.x*direction.x) + (p.norm.y*direction.y) + (p.norm.z*direction.z));
 }
