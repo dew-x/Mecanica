@@ -75,6 +75,7 @@
     <ClInclude Include="Line.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Segment.h" />
     <ClInclude Include="Sphere.h" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +83,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Segment.cpp" />
     <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
