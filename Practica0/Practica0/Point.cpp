@@ -22,7 +22,7 @@ void Point::setCoord(const float &x, const float &y, const float &z) {
 }
 
 std::ostream &operator<<(std::ostream &os, Point const &p) {
-	return os << "(" << p.coord.x << ", " << p.coord.y << ", " << p.coord.z << ")" << std::endl;
+	return os << "(" << p.coord.x << ", " << p.coord.y << ", " << p.coord.z << ")";
 }
 
 float Point::distanceToPoint(const Point& q) {

@@ -4,14 +4,12 @@
 class Plane
 {
 public:
-	Plane();
+	Plane(Point point, glm::vec3 normal);
 	~Plane();
 	Point p;
 	glm::vec3 norm;
 	float d;
-	void setPlane(Point p, glm::vec3 norm);
 	//functions
-	void calcD();
 	Point entryPointSegmentPlane(Line a);
 	bool isInFront(Point p);
 };
