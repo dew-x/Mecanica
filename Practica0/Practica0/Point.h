@@ -6,6 +6,7 @@ class Point
 public:
 	Point();
 	Point(float x, float y, float z);
+	Point(glm::vec3 vec);
 	~Point();
 	glm::vec3 coord;
 	// setters

@@ -166,3 +166,7 @@ void Particle::updateParticle(const float& dt, UpdateMethod method)
 	}
 	return;
 }
+
+bool Particle::didCollidePlane(Plane p) {
+	return p.isInFront(Point(m_previousPosition)) != p.isInFront(Point(m_currentPosition));
+}

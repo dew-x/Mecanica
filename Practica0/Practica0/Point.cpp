@@ -16,6 +16,10 @@ Point::~Point()
 {
 }
 
+Point::Point(glm::vec3 vec) {
+	coord = vec;
+}
+
 void Point::setCoord(const float &x, const float &y, const float &z) {
 	coord = glm::vec3(x, y, z);
 	return;
