@@ -170,3 +170,8 @@ void Particle::updateParticle(const float& dt, UpdateMethod method)
 bool Particle::didCollidePlane(Plane p) {
 	return p.isInFront(Point(m_previousPosition)) != p.isInFront(Point(m_currentPosition));
 }
+
+void Particle::doCollidePlane(Plane p){
+	m_currentPosition = m_currentPosition - ((1+m_bouncing) * (glm::dot(p.norm, m_currentPosition) + p.d) * p.norm);
+	m_velocity = m_velocity - ((1+m_bouncing) * (glm::dot(p.norm, m_velocity))*p.norm);
+}

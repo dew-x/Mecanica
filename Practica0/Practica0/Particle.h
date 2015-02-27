@@ -40,6 +40,8 @@ public:
 	void updateParticle(const float& dt, UpdateMethod method = UpdateMethod::EulerOrig);
 
 	bool didCollidePlane(Plane p);
+	void doCollidePlane(Plane p);
+
 
 
 private:
