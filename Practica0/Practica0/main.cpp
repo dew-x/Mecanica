@@ -1,9 +1,12 @@
 #include <iostream>
 #include "Particle.h"
-
+#include "Plane.h"
+#include"Point.h"
 
 void main(){
 	Particle p(0.0f, 10.0f, 0.0f);
+	Point point(0, 0, 0);
+	Plane plane(point, glm::vec3(0,1,0));
 	float dt = 0.01f;
 	float tini = 0.0f;
 	float tfinal = 10.0f;
@@ -20,7 +23,7 @@ void main(){
 		std::cout << "posicio = " << p.getCurrentPosition().x << "  " << p.getCurrentPosition().y
 			<< "  " << p.getCurrentPosition().z << "  temps = " << t << std::endl;
 		//Check Floor collisions
-		if (p.getCurrentPosition().y < 0.0f) { //only valid for the plane y=0 (floor plane)
+		if (p.didCollidePlane(plane)) { //only valid for the plane y=0 (floor plane)
 			p.setPosition(p.getCurrentPosition().x, -p.getCurrentPosition().y, p.getCurrentPosition().z);
 			p.setVelocity(p.getVelocity().x, -p.getVelocity().y, p.getVelocity().z);
 			std::cout << "rebot = " << count++ << std::endl;
