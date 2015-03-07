@@ -57,16 +57,17 @@ void main() {
 	for (int i = 0; i <= SIZE; ++i) {
 		for (int j = 0; j <= SIZE; ++j) {
 			for (int k = 0; k <= SIZE; ++k) {
-				glm::vec3 coord = { (i / SIZE)*width.x, (j / SIZE)*width.y, (k / SIZE)*width.z };
+				glm::vec3 coord = { ((float)i / SIZE)*width.x, ((float)j / SIZE)*width.y, ((float)k / SIZE)*width.z };
 				grid[i][j][k] = min + coord;
+				//cout << i << " " << j << " " << k << " -> " << grid[i][j][k].x << " " << grid[i][j][k].y << " " << grid[i][j][k].z<< endl;
 			}
 		}
 	}
 	
 	// taper
-	taper(grid, min, max);
+	//taper(grid, min, max);
 	// twist
-	//twist(grid, min);
+	twist(grid, min, max, 1.0);
 	// recalc points
 	glm::vec3 s_vertex;
 	glm::vec3 t_vertex;
@@ -96,18 +97,11 @@ void main() {
 		points[i].x = (glm::dot(cp_s, vs)) / (glm::dot(cp_s, s_vertex));
 		points[i].y = (glm::dot(cp_t, vs)) / (glm::dot(cp_t, t_vertex));
 		points[i].z = (glm::dot(cp_u, vs)) / (glm::dot(cp_u, u_vertex));
-
+		points[i] = deform(points[i], SIZE, grid, binominal);
 	}
-	//As exemple we modify one mesh vertex
-	vertexData[5].x = 2.0f;
-	vertexData[5].y = 2.0f;
-	vertexData[5].z = 2.0f;
-	// or the same way:	
-	//mesh.setVertex(5, 2.0f, 2.0f, 2.0f);
-
 	// write the new mesh vertex
 	for (int i = 0; i < vertexData.size(); i++) {
-		mesh.setVertex(i, vertexData[i].x*2, vertexData[i].y, vertexData[i].z);
+		mesh.setVertex(i, points[i].x, points[i].y, points[i].z);
 	}
 	// create a new file with the modified mesh
 	mesh.printObjModel(mesh, fileOut);
