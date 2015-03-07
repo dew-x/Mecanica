@@ -28,3 +28,21 @@ void taper(vector<vector<vector<glm::vec3> > > &points, glm::vec3 origin, glm::v
 void twist(vector<vector<vector<glm::vec3> > > &points, glm::vec3 origin) {
 
 }
+
+void preCalcBernstein(int max,vector<int> &output) {
+	output = vector<int> (max+1);
+	int n = max;
+	for (int i = 0; i <= max; ++i) {
+		int val = 1;
+		int ni = n - i;
+		if (ni < i) {
+			for (int j = i + 1; j <= n; ++j) val *= j;
+			for (int j = 2; j <= ni; ++i) val /= j;
+		}
+		else {
+			for (int j = ni + 1; j <= n; ++j) val *= j;
+			for (int j = 2; j <= i; ++i) val /= j;
+		}
+		output[i] = val;
+	}
+}
