@@ -29,7 +29,7 @@ void twist(vector<vector<vector<glm::vec3> > > &points, glm::vec3 origin) {
 
 }
 
-void preCalcBernstein(int max,vector<int> &output) {
+void preCalcBinominal(int max, vector<int> &output) {
 	output = vector<int> (max+1);
 	int n = max;
 	for (int i = 0; i <= max; ++i) {

@@ -25,7 +25,7 @@ void main() {
 	std::string fileOut = name + "Mod.obj";
 	Mesh mesh; 
 	std::vector<int> binominal;
-	preCalcBernstein(SIZE, binominal);
+	preCalcBinominal(SIZE, binominal);
 	std::vector<glm::vec3> vertexData;
 	std::vector<glm::i32vec3> faceData;
 	//-----------------------------------------------------
@@ -70,7 +70,7 @@ void main() {
 	// recalc points
 	vector<glm::vec3> points(vertexData.size());
 	for (int i = 0; i<vertexData.size(); ++i) {
-		points[i] = (vertexData[i] - min);
+		points[i] = (vertexData[i] - min)/width;
 	}
 	//As exemple we modify one mesh vertex
 	vertexData[5].x = 2.0f;
