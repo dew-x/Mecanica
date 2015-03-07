@@ -24,6 +24,8 @@ void main() {
 	std::string fileIn = name + ".obj";
 	std::string fileOut = name + "Mod.obj";
 	Mesh mesh; 
+	std::vector<int> binominal;
+	preCalcBernstein(SIZE, binominal);
 	std::vector<glm::vec3> vertexData;
 	std::vector<glm::i32vec3> faceData;
 	//-----------------------------------------------------
@@ -40,7 +42,7 @@ void main() {
 	glm::vec3 min = { vertexData[0].x, vertexData[0].y, vertexData[0].z };
 	glm::vec3 max = { vertexData[0].x, vertexData[0].y, vertexData[0].z };
 	for (int i = 1; i < vertexData.size(); i++) {
-		if (vertexData[i].x < min.x) min.x=vertexData[i].x;
+		if (vertexData[i].x < min.x) min.x = vertexData[i].x;
 		if (vertexData[i].y < min.y) min.y = vertexData[i].y;
 		if (vertexData[i].z < min.z) min.z = vertexData[i].z;
 		if (vertexData[i].x > max.x) max.x = vertexData[i].x;
