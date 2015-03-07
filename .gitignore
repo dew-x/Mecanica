@@ -45,7 +45,6 @@ Temporary Items
 *.pdb
 *.filters
 *.idb
-*.obj
 *.lastbuildstate
 *.tlog
 *.log
