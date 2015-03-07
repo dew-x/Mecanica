@@ -68,9 +68,35 @@ void main() {
 	// twist
 	//twist(grid, min);
 	// recalc points
+	glm::vec3 s_vertex;
+	glm::vec3 t_vertex;
+	glm::vec3 u_vertex;
+	//prepare S
+	s_vertex.x = width.x;
+	s_vertex.y = s_vertex.z = 0;
+	//prepare T
+	t_vertex.x = t_vertex.z = 0;
+	t_vertex.y = width.y;
+	//prepare U
+	u_vertex.x = u_vertex.y = 0;
+	u_vertex.z = width.z;
+	//calc cross products
+	glm::vec3 cp_s;
+	glm::vec3 cp_t;
+	glm::vec3 cp_u;
+	cp_s = glm::cross(t_vertex, u_vertex);
+	cp_t = glm::cross(s_vertex, u_vertex);
+	cp_u = glm::cross(s_vertex, t_vertex);
+	//create points
 	vector<glm::vec3> points(vertexData.size());
 	for (int i = 0; i<vertexData.size(); ++i) {
-		points[i] = (vertexData[i] - min)/width;
+		//points[i] = (vertexData[i] - min);
+		glm::vec3 vs;
+		vs = vertexData[i] - min;
+		points[i].x = (glm::dot(cp_s, vs)) / (glm::dot(cp_s, s_vertex));
+		points[i].y = (glm::dot(cp_t, vs)) / (glm::dot(cp_t, t_vertex));
+		points[i].z = (glm::dot(cp_u, vs)) / (glm::dot(cp_u, u_vertex));
+
 	}
 	//As exemple we modify one mesh vertex
 	vertexData[5].x = 2.0f;
