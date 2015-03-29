@@ -1,0 +1,1 @@
+FreeFormDef.exe >log.txt

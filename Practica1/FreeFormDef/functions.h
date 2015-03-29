@@ -34,9 +34,9 @@ void twist(vector<vector<vector<glm::vec3> > > &points, glm::vec3 origin, glm::v
 				if (z >= final.z) ry = angle;
 				else if (z> origin.z) ry = angle*((z-origin.z) / (final.z-origin.z));
 				glm::mat3 mul = {
-					{ cos(ry), 0, -sin(ry) },
-					{ sin(ry), 0, cos(ry) },
-					{ 0,1,0 }
+					{ cos(ry), -sin(ry),0 },
+					{ sin(ry), cos(ry), 0},
+					{ 0,0,1 }
 				};
 				points[i][j][k] = mul*points[i][j][k];
 			}
@@ -74,28 +74,67 @@ inline double bernstein(int k, int n, double v, const vector<int> &binominal) {
 	return binominal[k] * pow(v, (double)k) * pow((1 - v), (double)(n - k));
 }
 
-glm::vec3 deform(glm::vec3 point, int SIZE, const vector<vector<vector<glm::vec3> > > &grid, const vector<int> &binominal) {
+glm::vec3 deform(glm::vec3 point, int size, const vector<vector<vector<glm::vec3> > > &grid, const vector<int> &binominal) {
 	//cout << "b0 " << point.x << " " << point.y << " " << point.z << endl;
-	glm::vec3 ffd3, ffd2, ffd1;
-	double bpS = 0, bpT = 0, bpU = 0;
-	ffd1 = { 0, 0, 0 };
-	for (int i = 0; i <= SIZE; i++) {
-		ffd2 = { 0, 0, 0 };
-		for (int j = 0; j <= SIZE; j++) {
-			ffd3 = { 0, 0, 0 };
-			for (int k = 0; k <= SIZE; k++) {
-				bpU = bernstein(k, SIZE, point.z, binominal);
-				ffd3 = ffd3 + ((float)bpU*grid[i][j][k]);
-				//cout << "a3 " << ffd3.x << " " << ffd3.y << " " << ffd3.z << endl;
-			}
-			bpT = bernstein(j, SIZE, point.y, binominal);
-			ffd2 = ffd2 + ((float)bpT * ffd3);
-			//cout << "a2 " << ffd2.x << " " << ffd2.y << " " << ffd2.z << endl;
-		}
-		bpS = bernstein(i, SIZE, point.x, binominal);
-		ffd1 = ffd1 + ((float)bpS * ffd2);
-		//cout << "a1 " << ffd1.x << " " << ffd1.y << " " << ffd1.z << endl;
+	glm::vec3 x,y,z;
+	x = { 0, 0, 0 };
+	vector<float> bs(size + 1), bt(size + 1), bu(size + 1);
+	for (int i = 0; i <= size; i++) {
+		bs[i] = bernstein(i, size, point.x, binominal);
+		bt[i] = bernstein(i, size, point.y, binominal);
+		bu[i] = bernstein(i, size, point.z, binominal);
 	}
-	//cout << "a0 " << ffd1.x << " " << ffd1.y << " " << ffd1.z << endl;
-	return ffd1;
+	for (int i = 0; i <= size; i++) {
+		y = { 0, 0, 0 };
+		for (int j = 0; j <= size; j++) {
+			z = { 0, 0, 0 };
+			for (int k = 0; k <= size; k++) {
+				z += (bu[k]*grid[i][j][k]);
+			}
+			y += (bt[j] * z);
+		}
+		x += (bs[i] * y);
+	}
+	return x;
+}
+#define ZERO 1.1920929e-07F
+inline bool fok(float a, float b) {
+	int n, m;
+	frexp(a, &n);
+	frexp(b, &m);
+	return abs(n - m) < 23;
+}
+glm::vec3 deform2(glm::vec3 point, int size, const vector<vector<vector<glm::vec3> > > &grid, const vector<int> &binominal) {
+	//cout << "b0 " << point.x << " " << point.y << " " << point.z << endl;
+	glm::vec3 x, y, z;
+	x = { 0, 0, 0 };
+	vector<float> bs(size + 1), bt(size + 1), bu(size + 1);
+	for (int i = 0; i <= size; i++) {
+		bs[i] = bernstein(i, size, point.x, binominal);
+		bt[i] = bernstein(i, size, point.y, binominal);
+		bu[i] = bernstein(i, size, point.z, binominal);
+		cout <<i <<" "<< bs[i] << " " << bt[i] << " " << bu[i] << endl;
+	}
+	int minx, miny, minz, maxx,maxy,maxz;
+	minx = miny = minz = 0;
+	maxx = maxy = maxz = size;
+	// calc limit i
+	for (int i = 0; bs[i] < ZERO && i<=size; i++) minx = i + 1;
+	for (int i = size; bs[i] < ZERO && i >=0; --i) maxx = i - 1;
+	for (int i = 0; bt[i] < ZERO && i <= size; i++) miny = i + 1;
+	for (int i = size; bt[i] < ZERO && i >= 0; --i) maxy = i - 1;
+	for (int i = 0; bu[i] < ZERO && i <= size; i++) minz = i + 1;
+	for (int i = size; bu[i] < ZERO && i >= 0; --i) maxz = i - 1;
+	for (int i = minx; i <= maxx; i++) {
+		y = { 0, 0, 0 };
+		for (int j = miny; j <= maxy; j++) {
+			z = { 0, 0, 0 };
+			for (int k = minz; k <= maxz; k++) {
+				z += (bu[k] * grid[i][j][k]);
+			}
+			y += (bt[j] * z);
+		}
+		x += (bs[i] * y);
+	}
+	return x;
 }

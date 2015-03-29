@@ -49,16 +49,16 @@ void main() {
 		if (vertexData[i].y > max.y) max.y = vertexData[i].y;
 		if (vertexData[i].z > max.z) max.z = vertexData[i].z;
 	}
-
-	std::cout << min.x << " " << min.y << " " << min.z << std::endl;
-	std::cout << max.x << " " << max.y << " " << max.z << std::endl;
-	vector<vector<vector<glm::vec3> > > grid(SIZE + 1, vector<vector<glm::vec3> >(SIZE+1, vector<glm::vec3>(SIZE+1)));
 	glm::vec3 width = max - min;
+	std::cout <<"MIN "<< min.x << " " << min.y << " " << min.z << std::endl;
+	std::cout <<"MAX "<< max.x << " " << max.y << " " << max.z << std::endl;
+	std::cout << "WIDTH " << width.x << " " << width.y << " " << width.z << std::endl;
+	vector<vector<vector<glm::vec3> > > grid(SIZE + 1, vector<vector<glm::vec3> >(SIZE+1, vector<glm::vec3>(SIZE+1)));
 	for (int i = 0; i <= SIZE; ++i) {
 		for (int j = 0; j <= SIZE; ++j) {
 			for (int k = 0; k <= SIZE; ++k) {
-				glm::vec3 coord = { ((float)i / SIZE)*width.x, ((float)j / SIZE)*width.y, ((float)k / SIZE)*width.z };
-				grid[i][j][k] = min + coord;
+				glm::vec3 coord = { ((float)i / SIZE), ((float)j / SIZE), ((float)k / SIZE) };
+				grid[i][j][k] = min + (coord*width);
 				//cout << i << " " << j << " " << k << " -> " << grid[i][j][k].x << " " << grid[i][j][k].y << " " << grid[i][j][k].z<< endl;
 			}
 		}
@@ -69,42 +69,32 @@ void main() {
 	// twist
 	twist(grid, min, max, 1.0);
 	// recalc points
-	glm::vec3 s_vertex;
-	glm::vec3 t_vertex;
-	glm::vec3 u_vertex;
-	//prepare S
-	s_vertex.x = width.x;
-	s_vertex.y = s_vertex.z = 0;
-	//prepare T
-	t_vertex.x = t_vertex.z = 0;
-	t_vertex.y = width.y;
-	//prepare U
-	u_vertex.x = u_vertex.y = 0;
-	u_vertex.z = width.z;
+	glm::vec3 s_vertex = { width.x, 0, 0 };
+	glm::vec3 t_vertex = { 0, width.y, 0 };
+	glm::vec3 u_vertex = { 0, 0, width.z };
 	//calc cross products
-	glm::vec3 cp_s;
-	glm::vec3 cp_t;
-	glm::vec3 cp_u;
-	cp_s = glm::cross(t_vertex, u_vertex);
-	cp_t = glm::cross(s_vertex, u_vertex);
-	cp_u = glm::cross(s_vertex, t_vertex);
+	glm::vec3 cp_s = glm::cross(t_vertex, u_vertex);
+	glm::vec3 cp_t = glm::cross(s_vertex, u_vertex);
+	glm::vec3 cp_u = glm::cross(s_vertex, t_vertex);
+	float dt_s = glm::dot(cp_s, s_vertex);
+	float dt_t = glm::dot(cp_t, t_vertex);
+	float dt_u = glm::dot(cp_u, u_vertex);
 	//create points
 	vector<glm::vec3> points(vertexData.size());
+	//double error = 0;
 	for (int i = 0; i<vertexData.size(); ++i) {
-		//points[i] = (vertexData[i] - min);
-		glm::vec3 vs;
-		vs = vertexData[i] - min;
-		points[i].x = (glm::dot(cp_s, vs)) / (glm::dot(cp_s, s_vertex));
-		points[i].y = (glm::dot(cp_t, vs)) / (glm::dot(cp_t, t_vertex));
-		points[i].z = (glm::dot(cp_u, vs)) / (glm::dot(cp_u, u_vertex));
-		points[i] = deform(points[i], SIZE, grid, binominal);
+		glm::vec3 vs = vertexData[i] - min;
+		vs.x = (glm::dot(cp_s, vs)) / dt_s;
+		vs.y = (glm::dot(cp_t, vs)) / dt_t;
+		vs.z = (glm::dot(cp_u, vs)) / dt_u;
+		//glm::vec3 vs1 = deform2(vs, SIZE, grid, binominal);
+		vs = deform(vs, SIZE, grid, binominal);
+		//error += glm::distance(vs,vs1);
+		mesh.setVertex(i, vs.x, vs.y, vs.z);
 	}
-	// write the new mesh vertex
-	for (int i = 0; i < vertexData.size(); i++) {
-		mesh.setVertex(i, points[i].x, points[i].y, points[i].z);
-	}
+	//cout << "error " << error << endl;
 	// create a new file with the modified mesh
 	mesh.printObjModel(mesh, fileOut);
-	cout << double(clock() - t) / CLOCKS_PER_SEC << endl;
+	cout <<"DONE IN " << double(clock() - t) / CLOCKS_PER_SEC << endl;
 	system("PAUSE");
 }
