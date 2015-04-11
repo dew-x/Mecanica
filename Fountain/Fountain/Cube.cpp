@@ -27,36 +27,55 @@ vector<glm::vec3> Cube::getVertices(){
 
 vector<glm::vec3> Cube::getQuads(){
 	vector<glm::vec3> cubeQuads = {
-		//top
+		//top triangles
 			{ center.x, center.y + distances.y, center.z },
 			{ center.x, center.y + distances.y, center.z + distances.z },
-			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
 			{ center.x + distances.x, center.y + distances.y, center.z },
-		//bot
+
+			{ center.x + distances.x, center.y + distances.y, center.z },
+			{ center.x, center.y + distances.y, center.z + distances.z },
+			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
+		//bot triangles
 			{ center.x, center.y, center.z },
 			{ center.x, center.y, center.z + distances.z },
-			{ center.x + distances.x, center.y, center.z + distances.z },
 			{ center.x + distances.x, center.y, center.z },
-		//front
+		
+			{ center.x + distances.x, center.y, center.z },
+			{ center.x, center.y, center.z + distances.z },
+			{ center.x + distances.x, center.y, center.z + distances.z },
+		//front triangles
 			{ center.x, center.y, center.z },
+			{ center.x, center.y + distances.y, center.z },
+			{ center.x + distances.x, center.y, center.z },
+
+			{ center.x + distances.x, center.y, center.z },
 			{ center.x, center.y + distances.y, center.z },
 			{ center.x + distances.x, center.y + distances.y, center.z },
-			{ center.x + distances.x, center.y, center.z },
-		//left
+		//left triangles
 			{ center.x, center.y, center.z },
 			{ center.x, center.y, center.z + distances.z },
-			{ center.x, center.y + distances.y, center.z + distances.z },
 			{ center.x, center.y + distances.y, center.z },
-			//back
+
+			{ center.x, center.y + distances.y, center.z },
+			{ center.x, center.y + distances.y, center.z + distances.z },
+			{ center.x, center.y, center.z + distances.z },
+		//back triangles
 			{ center.x, center.y, center.z + distances.z },
 			{ center.x, center.y + distances.y, center.z + distances.z },
-			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
 			{ center.x + distances.x, center.y, center.z + distances.z },
-			//right
+
 			{ center.x + distances.x, center.y, center.z + distances.z },
 			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
+			{ center.x, center.y + distances.y, center.z + distances.z },
+		//right triangles
+			{ center.x + distances.x, center.y, center.z + distances.z },
+			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
+			{ center.x + distances.x, center.y, center.z },
+
 			{ center.x + distances.x, center.y + distances.y, center.z }, 
 			{ center.x + distances.x, center.y, center.z },
+			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
+		//all are 
 	};
 	return cubeQuads;
 }
