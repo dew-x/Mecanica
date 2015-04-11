@@ -31,3 +31,14 @@ bool Triangle::isPointInside(Point p) {
 	return fabs(M_PI * 2 - angle) < 0.0001;
 }
 
+vector<glm::vec3> Triangle::getVertex(){
+	vector<glm::vec3> vertex[3];
+	vertex[3] = {
+
+	};
+	return vertex[3];
+}
+
+glm::vec3 Triangle::TransformPointToVertex(Point a){
+
+}

@@ -6,7 +6,7 @@ Cube::Cube(const glm::vec3 &d,const glm::vec3 &c ){
 	center = c;
 }
 
-Cube::~Cube()
+Cube::~Cube(){
 }
 
 vector<glm::vec3> Cube::getVertices(){
