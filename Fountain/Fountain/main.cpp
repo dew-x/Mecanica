@@ -171,11 +171,12 @@ int main(int argc, char *argv[])
 		vert.push_back(0.0);
 		vert.push_back(0.0);
 		vert.push_back(1.0);
+		vert.push_back(0.5);
 	}
 	// sphere
 	Point center({ 0, 0, 0 });
 	Sphere sphere(center,2);
-	vector<glm::vec3> tmps = sphere.getVertexSphere(20.0);
+	vector<glm::vec3> tmps = sphere.getVertexSphere(4.0);
 	for (unsigned i = 0; i < tmps.size(); ++i) {
 		vert.push_back(tmps[i].x);
 		vert.push_back(tmps[i].y);
@@ -183,6 +184,7 @@ int main(int argc, char *argv[])
 		vert.push_back(0.0);
 		vert.push_back(1.0);
 		vert.push_back(0.0);
+		vert.push_back(1.0);
 	}
 	// plane
 	Point p1(9, 4, 9);
@@ -197,9 +199,10 @@ int main(int argc, char *argv[])
 		vert.push_back(1.0);
 		vert.push_back(0.0);
 		vert.push_back(0.0);
+		vert.push_back(1.0);
 	}
 	// cube
-	Cube cube({ 0, 0, 0 }, { 1, 1, 1 });
+	Cube cube({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f });
 	vector<glm::vec3> tmpc = cube.getQuads();
 	for (unsigned i = 0; i < tmpc.size(); ++i) {
 		vert.push_back(tmpc[i].x);
@@ -208,6 +211,12 @@ int main(int argc, char *argv[])
 		vert.push_back(1.0);
 		vert.push_back(1.0);
 		vert.push_back(1.0);
+		vert.push_back(1.0);
+	}
+	for (unsigned i = 0; i < vert.size(); ++i) {
+		if (i % 7 == 0) cout << endl;
+		cout << vert[i] << " ";
+		
 	}
 	GLuint VBO, VAO;
 	glGenVertexArrays(VOSIZE, &VAO);
@@ -216,9 +225,9 @@ int main(int argc, char *argv[])
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 	// Position attribute
 	
@@ -246,7 +255,7 @@ int main(int argc, char *argv[])
 	glAttachShader(shaderProgram, fragmentShader);
 	//glBindFragDataLocation(shaderProgram, 0, "outColor");
 	glLinkProgram(shaderProgram);
-	glUseProgram(shaderProgram);
+	
 
 	/*GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	glEnableVertexAttribArray(posAttrib);
@@ -264,6 +273,7 @@ int main(int argc, char *argv[])
 	camera.setPlanes(0.1f, 100.0f);
 	camera.setDepth(90.0f);
 	camera.setPos(0.0f, 0.0f, 22.0f);
+	glEnable(GL_DEPTH_TEST);
 	while (true)
 	{
 		camera.setRatio(WIDTH, HEIGHT);
@@ -314,6 +324,7 @@ int main(int argc, char *argv[])
 		projection = glm::perspective(2.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, vert.size());
 		/*for (unsigned i = 0; i < VOSIZE; ++i) {

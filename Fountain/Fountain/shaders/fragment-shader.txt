@@ -13,6 +13,6 @@ out vec4 finalColor;
 void main() {
 	//Assign the color based on the color the vertices
 	//finalColor = fragmentColor;
-	finalColor = vec4(1.0,0.0,0.0,1.0);
+	finalColor =fragmentColor;
 }
 

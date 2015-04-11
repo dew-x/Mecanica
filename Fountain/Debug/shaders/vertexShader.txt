@@ -1,15 +1,26 @@
 #version 330 core
-layout (location = 0) in vec3 position;
-layout (location = 2) in vec2 texCoord;
 
-out vec2 TexCoord;
+	//vec3 means a vector of 3 positions that will manage x, y, z
+layout (location = 0) in vec3 vertexPosition;
+	//vec4 means a vector of 4 positions that will manage RGBA		
+layout (location = 1) in vec3 vertexColor;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+	//Send the color of the vertex to the fragment shader
+out vec3 fragmentColor;
 
-void main()
-{
-    gl_Position = projection * view * model * vec4(position, 1.0f);
-    TexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
+	//MVP matrices
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+void main() {
+		//Multiply the vertex by the model matrix transformation
+	gl_Position = projectionMatrix*viewMatrix*modelMatrix*vec4(vertexPosition, 1.0f);
+
+		//We need to create the output variables that will go to the fragment shader,
+		//so, we assign the in variables to the new out variables	
+	fragmentColor=vertexColor;
+	//fragmentColor = vec4(1.0,0.0,0.0,1.0);
 }
+
+
