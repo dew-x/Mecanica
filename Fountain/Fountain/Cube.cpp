@@ -1,7 +1,7 @@
 #include "Cube.h"
 
 
-Cube::Cube(const glm::vec3 &d,const glm::vec3 &c ){
+Cube::Cube(const glm::vec3 &c, const glm::vec3 &d){
 	center = c;
 	distances = d;
 }
