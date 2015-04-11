@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 	GLuint shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
-	glBindFragDataLocation(shaderProgram, 0, "outColor");
+	//glBindFragDataLocation(shaderProgram, 0, "outColor");
 	glLinkProgram(shaderProgram);
 	glUseProgram(shaderProgram);
 
@@ -240,7 +240,7 @@ int main(int argc, char *argv[])
 				else if (windowEvent.key.keysym.sym == SDLK_RIGHT || windowEvent.key.keysym.sym == SDLK_d) camTranslate.y -= 0.02f;
 			}
 		}
-		camAngle += 0.001;
+		camAngle += 0.001f;
 		// Render
 		// Clear the colorbuffer
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -256,11 +256,11 @@ int main(int argc, char *argv[])
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-		/*for (unsigned i = 0; i < VOSIZE; ++i) {
+		for (unsigned i = 0; i < VOSIZE; ++i) {
 			if (i == 0) glDrawArrays(GL_QUADS, LOC[i].begin, LOC[i].end);
 			else if (i == 1) glDrawArrays(GL_TRIANGLES, LOC[i].begin, LOC[i].end);
 			else if (i == 2) glDrawArrays(GL_POINT, LOC[i].begin, LOC[i].end);
-		}*/
+		}
 		glBindVertexArray(0);
 		// Activate shader
 		//glUseProgram(shaderProgram);

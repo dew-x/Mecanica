@@ -20,7 +20,7 @@ void main() {
 		//We need to create the output variables that will go to the fragment shader,
 		//so, we assign the in variables to the new out variables	
 	fragmentColor=vec4(vertexColor,1.0);
-	fragmentColor = vec4(1.0,0.0,0.0,1.0);
+	//fragmentColor = vec4(1.0,0.0,0.0,1.0);
 }
 
 
