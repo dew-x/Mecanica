@@ -18,6 +18,6 @@ public:
 	Point entryPointSegmentPlane(Line l,bool &inside);
 	bool isPointInside(Point p);
 	vector<glm::vec3> Triangle::getVertex();
-	glm::vec3 Triangle::TransformPointToVertex(Point a)
+	glm::vec3 Triangle::TransformPointToVertex(Point a);
 };
 
