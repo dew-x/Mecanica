@@ -12,6 +12,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
+#include "Cube.h"
+#include "Sphere.h"
+#include "Triangle.h"
+using namespace std;
 
 #define VOSIZE 3
 // Window dimensions
@@ -155,17 +159,86 @@ int main(int argc, char *argv[])
 		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
 		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 	};
-	std::vector<bs> LOC(VOSIZE);
-	LOC[0] = { 0, 12 };
-	LOC[0] = { 12, 12 };
-	LOC[0] = { 24, 12 };
+	vector<GLfloat> vert = {
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+
+		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+	};
+	// world
+	Cube world({ -5, -5, 0 }, { 10, 10, 10 });
+	// sphere
+	Point center({ 5, 5, 5 });
+	Sphere sphere(center,2);
+	vector<glm::vec3> tmps = sphere.getVertexSphere(100.0);
+	for (unsigned i = 0; i < tmps.size(); ++i) {
+		vert.push_back(tmps[i].x);
+		vert.push_back(tmps[i].y);
+		vert.push_back(tmps[i].z);
+		vert.push_back(0.0);
+		vert.push_back(1.0);
+		vert.push_back(0.0);
+	}
+	// plane
+	Point p1(9, 9, 4);
+	Point p2(8, 9, 3);
+	Point p3(9, 8, 2);
+	Triangle tri(p1, p2, p3);
+	vector<glm::vec3> tmpt=tri.getVertex();
+	for (unsigned i = 0; i < tmpt.size(); ++i) {
+		vert.push_back(tmpt[i].x);
+		vert.push_back(tmpt[i].y);
+		vert.push_back(tmpt[i].z);
+		vert.push_back(1.0);
+		vert.push_back(0.0);
+		vert.push_back(0.0);
+	}
+	// cube
+	Cube cube({ 0, 0, 0 }, { 1, 1, 1 });
 	GLuint VBO, VAO;
 	glGenVertexArrays(VOSIZE, &VAO);
 	glGenBuffers(VOSIZE, &VBO);
 	// vertex bind
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vert.size(), &vert[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
@@ -213,7 +286,7 @@ int main(int argc, char *argv[])
 	glm::vec3 camScale = { 1.0f, 1.0f, 1.0f };
 	camera.setPlanes(0.1f, 100.0f);
 	camera.setDepth(90.0f);
-	camera.setPos(3.0f, 0.0f, 2.0f);
+	camera.setPos(3.0f, 0.0f, 12.0f);
 	while (true)
 	{
 		camera.setRatio(WIDTH, HEIGHT);
@@ -255,12 +328,12 @@ int main(int argc, char *argv[])
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		for (unsigned i = 0; i < VOSIZE; ++i) {
+		glDrawArrays(GL_TRIANGLES, 0, vert.size());
+		/*for (unsigned i = 0; i < VOSIZE; ++i) {
 			if (i == 0) glDrawArrays(GL_QUADS, LOC[i].begin, LOC[i].end);
 			else if (i == 1) glDrawArrays(GL_TRIANGLES, LOC[i].begin, LOC[i].end);
 			else if (i == 2) glDrawArrays(GL_POINT, LOC[i].begin, LOC[i].end);
-		}
+		}*/
 		glBindVertexArray(0);
 		// Activate shader
 		//glUseProgram(shaderProgram);
@@ -304,7 +377,7 @@ int main(int argc, char *argv[])
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-
+	SDL_DestroyWindow(window);
 	SDL_GL_DeleteContext(context);
 	SDL_Quit();
 	return 0;
