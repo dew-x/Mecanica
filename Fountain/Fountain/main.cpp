@@ -174,8 +174,8 @@ int main(int argc, char *argv[])
 		// Camera/View transformation
 		glm::mat4 view;
 		GLfloat radius = 10.0f;
-		GLfloat camX = sin(SDL_GetTicks()/400.0f) * radius;
-		GLfloat camZ = cos(SDL_GetTicks() / 400.0f) * radius;
+		GLfloat camX = sin(SDL_GetTicks()/800.0f) * radius;
+		GLfloat camZ = cos(SDL_GetTicks() / 800.0f) * radius;
 		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		// Projection 
 		glm::mat4 projection;
