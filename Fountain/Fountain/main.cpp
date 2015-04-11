@@ -160,50 +160,18 @@ int main(int argc, char *argv[])
 		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 	};
 	vector<GLfloat> vert = {
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
 	};
 	// world
 	Cube world({ -5, -5, 0 }, { 10, 10, 10 });
+	vector<glm::vec3> tmpw = world.getQuads();
+	for (unsigned i = 0; i < tmpw.size(); ++i) {
+		vert.push_back(tmpw[i].x);
+		vert.push_back(tmpw[i].y);
+		vert.push_back(tmpw[i].z);
+		vert.push_back(0.0);
+		vert.push_back(0.0);
+		vert.push_back(1.0);
+	}
 	// sphere
 	Point center({ 5, 5, 5 });
 	Sphere sphere(center,2);
@@ -232,13 +200,22 @@ int main(int argc, char *argv[])
 	}
 	// cube
 	Cube cube({ 0, 0, 0 }, { 1, 1, 1 });
+	vector<glm::vec3> tmpc = cube.getQuads();
+	for (unsigned i = 0; i < tmpc.size(); ++i) {
+		vert.push_back(tmpc[i].x);
+		vert.push_back(tmpc[i].y);
+		vert.push_back(tmpc[i].z);
+		vert.push_back(1.0);
+		vert.push_back(1.0);
+		vert.push_back(1.0);
+	}
 	GLuint VBO, VAO;
 	glGenVertexArrays(VOSIZE, &VAO);
 	glGenBuffers(VOSIZE, &VBO);
 	// vertex bind
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vert.size(), &vert[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
@@ -286,7 +263,7 @@ int main(int argc, char *argv[])
 	glm::vec3 camScale = { 1.0f, 1.0f, 1.0f };
 	camera.setPlanes(0.1f, 100.0f);
 	camera.setDepth(90.0f);
-	camera.setPos(3.0f, 0.0f, 12.0f);
+	camera.setPos(0.0f, 0.0f, 22.0f);
 	while (true)
 	{
 		camera.setRatio(WIDTH, HEIGHT);
@@ -325,8 +302,18 @@ int main(int argc, char *argv[])
 		GLint viewLoc = glGetUniformLocation(shaderProgram, "viewMatrix");
 		GLint projLoc = glGetUniformLocation(shaderProgram, "projectionMatrix");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
+		//glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
+		//glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
+		glm::mat4 view;
+		GLfloat radius = 20.0f;
+		GLfloat camX = sin(SDL_GetTicks() / 800.0f) * radius;
+		GLfloat camZ = cos(SDL_GetTicks() / 800.0f) * radius;
+		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		// Projection 
+		glm::mat4 projection;
+		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, vert.size());
 		/*for (unsigned i = 0; i < VOSIZE; ++i) {
