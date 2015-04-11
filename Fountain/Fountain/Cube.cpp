@@ -2,8 +2,8 @@
 
 
 Cube::Cube(const glm::vec3 &d,const glm::vec3 &c ){
-	distances = d;
 	center = c;
+	distances = d;
 }
 
 Cube::~Cube(){
