@@ -10,8 +10,7 @@ Cube::~Cube(){
 }
 
 vector<glm::vec3> Cube::getVertices(){
-	vector<glm::vec3> cubeVertices[8];
-	cubeVertices[8] = {
+	vector<glm::vec3> cubeVertices = {
 		//bot 
 			{center.x,center.y,center.z},
 			{center.x,center.y,center.z + distances.z}, 
@@ -23,28 +22,27 @@ vector<glm::vec3> Cube::getVertices(){
 			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
 			{ center.x + distances.x , center.y + distances.y,center.z }
 	};
-	return cubeVertices[8];
+	return cubeVertices;
 }
 
 vector<glm::vec3> Cube::getQuads(){
-	vector<glm::vec3> cubeQuads[24];
-	cubeQuads[24] = {
+	vector<glm::vec3> cubeQuads = {
 		//top
 			{ center.x, center.y + distances.y, center.z },
 			{ center.x, center.y + distances.y, center.z + distances.z },
 			{ center.x + distances.x, center.y + distances.y, center.z + distances.z },
 			{ center.x + distances.x, center.y + distances.y, center.z },
-			//bot
+		//bot
 			{ center.x, center.y, center.z },
 			{ center.x, center.y, center.z + distances.z },
 			{ center.x + distances.x, center.y, center.z + distances.z },
 			{ center.x + distances.x, center.y, center.z },
-			//front
+		//front
 			{ center.x, center.y, center.z },
 			{ center.x, center.y + distances.y, center.z },
 			{ center.x + distances.x, center.y + distances.y, center.z },
 			{ center.x + distances.x, center.y, center.z },
-			//left
+		//left
 			{ center.x, center.y, center.z },
 			{ center.x, center.y, center.z + distances.z },
 			{ center.x, center.y + distances.y, center.z + distances.z },
@@ -60,7 +58,7 @@ vector<glm::vec3> Cube::getQuads(){
 			{ center.x + distances.x, center.y + distances.y, center.z }, 
 			{ center.x + distances.x, center.y, center.z },
 	};
-	return cubeQuads[24];
+	return cubeQuads;
 }
 
 

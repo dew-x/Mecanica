@@ -32,13 +32,15 @@ bool Triangle::isPointInside(Point p) {
 }
 
 vector<glm::vec3> Triangle::getVertex(){
-	vector<glm::vec3> vertex[3];
-	vertex[3] = {
-
+	vector<glm::vec3> vertex = {
+		vA.coord,
+		vB.coord,
+		vC.coord,
 	};
-	return vertex[3];
+	return vertex;
 }
 
 glm::vec3 Triangle::TransformPointToVertex(Point a){
-
+	glm::vec3 vertex = a.coord;
+	return vertex;
 }
