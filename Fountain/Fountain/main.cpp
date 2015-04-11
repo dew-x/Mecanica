@@ -164,14 +164,14 @@ int main(int argc, char *argv[])
 	// world
 	Cube world({ -5, 0, -5 }, { 10, 10, 10 });
 	vector<glm::vec3> tmpw = world.getQuads();
-	for (unsigned i = 0; i < tmpw.size(); ++i) {
+	for (unsigned i = 0; i < 12; ++i) {
 		vert.push_back(tmpw[i].x);
 		vert.push_back(tmpw[i].y);
 		vert.push_back(tmpw[i].z);
 		vert.push_back(0.0);
 		vert.push_back(0.0);
 		vert.push_back(1.0);
-		vert.push_back(0.5);
+		vert.push_back(1.0f);
 	}
 	// sphere
 	Point center({ 0, 0, 0 });
@@ -187,9 +187,9 @@ int main(int argc, char *argv[])
 		vert.push_back(1.0);
 	}
 	// plane
-	Point p1(9, 4, 9);
-	Point p2(8, 3, 9);
-	Point p3(9, 2, 8);
+	Point p1(-3, 4, -3);
+	Point p2(-1, 3, -3);
+	Point p3(-3, 2, -1);
 	Triangle tri(p1, p2, p3);
 	vector<glm::vec3> tmpt=tri.getVertex();
 	for (unsigned i = 0; i < tmpt.size(); ++i) {
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
 		vert.push_back(1.0);
 	}
 	// cube
-	Cube cube({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f });
+	Cube cube({ 3.0f, 0.0f, 3.0f }, { 2.0f, 2.0f, 2.0f });
 	vector<glm::vec3> tmpc = cube.getQuads();
 	for (unsigned i = 0; i < tmpc.size(); ++i) {
 		vert.push_back(tmpc[i].x);
