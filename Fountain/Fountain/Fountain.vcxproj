@@ -84,31 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="ErrorManagement.cpp" />
-    <ClCompile Include="FPSLimiter.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="GLSLProgram.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="OpenGLBuffers.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="Window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="ErrorManagement.h" />
-    <ClInclude Include="FPSLimiter.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="GLSLProgram.h" />
-    <ClInclude Include="OpenGLBuffers.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="Plane.h" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="Vertex.h" />
-    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
