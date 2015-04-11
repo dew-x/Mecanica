@@ -3,7 +3,7 @@
 	//vec3 means a vector of 3 positions that will manage x, y, z
 in vec3 vertexPosition;
 	//vec4 means a vector of 4 positions that will manage RGBA		
-in vec4 vertexColor;
+in vec3 vertexColor;
 
 	//Send the color of the vertex to the fragment shader
 out vec4 fragmentColor;
@@ -19,7 +19,8 @@ void main() {
 
 		//We need to create the output variables that will go to the fragment shader,
 		//so, we assign the in variables to the new out variables	
-	fragmentColor=vertexColor;	
+	fragmentColor=vec4(vertexColor,1.0);
+	fragmentColor = vec4(1.0,0.0,0.0,1.0);
 }
 
 

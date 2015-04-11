@@ -3,7 +3,7 @@
 
 //We declare the input variables that come from the vertex shader
 	//fragment color: It's an interpolation of the color based on the triangles vertices
-in vec4 fragmentColor;
+in vec3 fragmentColor;
 
 //It will output a color into the screen.
 //Program works with 4 colors, which will be directly send to the screen. 
@@ -12,6 +12,7 @@ out vec4 finalColor;
 
 void main() {
 	//Assign the color based on the color the vertices
-	finalColor = fragmentColor;
+	//finalColor = vec4(fragmentColor,1.0);
+	finalColor = vec4(1.0,0.0,0.0,1.0);
 }
 

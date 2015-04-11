@@ -1,4 +1,5 @@
 #pragma once
+#define GLM_FORCE_RADIANS
 #include <GL/glew.h>					//The OpenGL Extension Wrangler
 #include <glm/glm.hpp>					//OpenGL Mathematics 
 #include <glm/gtc/matrix_transform.hpp> //OpenGL Matrix transform functions
