@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 	vector<GLfloat> vert = {
 	};
 	// world
-	Cube world({ -5, -5, 0 }, { 10, 10, 10 });
+	Cube world({ -5, 0, -5 }, { 10, 10, 10 });
 	vector<glm::vec3> tmpw = world.getQuads();
 	for (unsigned i = 0; i < tmpw.size(); ++i) {
 		vert.push_back(tmpw[i].x);
@@ -173,9 +173,9 @@ int main(int argc, char *argv[])
 		vert.push_back(1.0);
 	}
 	// sphere
-	Point center({ 5, 5, 5 });
+	Point center({ 0, 0, 0 });
 	Sphere sphere(center,2);
-	vector<glm::vec3> tmps = sphere.getVertexSphere(100.0);
+	vector<glm::vec3> tmps = sphere.getVertexSphere(20.0);
 	for (unsigned i = 0; i < tmps.size(); ++i) {
 		vert.push_back(tmps[i].x);
 		vert.push_back(tmps[i].y);
@@ -185,9 +185,9 @@ int main(int argc, char *argv[])
 		vert.push_back(0.0);
 	}
 	// plane
-	Point p1(9, 9, 4);
-	Point p2(8, 9, 3);
-	Point p3(9, 8, 2);
+	Point p1(9, 4, 9);
+	Point p2(8, 3, 9);
+	Point p3(9, 2, 8);
 	Triangle tri(p1, p2, p3);
 	vector<glm::vec3> tmpt=tri.getVertex();
 	for (unsigned i = 0; i < tmpt.size(); ++i) {
@@ -308,10 +308,10 @@ int main(int argc, char *argv[])
 		GLfloat radius = 20.0f;
 		GLfloat camX = sin(SDL_GetTicks() / 800.0f) * radius;
 		GLfloat camZ = cos(SDL_GetTicks() / 800.0f) * radius;
-		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		view = glm::lookAt(glm::vec3(camX, 10.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		// Projection 
 		glm::mat4 projection;
-		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+		projection = glm::perspective(2.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glBindVertexArray(VAO);
