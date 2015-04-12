@@ -5,6 +5,8 @@
 #include "Cube.h"
 #include "Sphere.h"
 #include "Triangle.h"
+#include "Line.h"
+#include "Point.h"
 
 class Particle
 {
@@ -44,9 +46,9 @@ public:
 	void updateParticle(const float& dt, UpdateMethod method = UpdateMethod::EulerOrig);
 	void updateSpring(Particle &p, float ke, float kd, float longitud);
 
-	void cubeCollision(const Cube &c);
-	void triangleCollision(const Triangle &t);
-	void sphereCollision(const Sphere &s);
+	void cubeCollision(Cube &c);
+	void triangleCollision(Triangle &t);
+	void sphereCollision(Sphere &s);
 private:
 	glm::vec3 m_currentPosition;
 	glm::vec3 m_previousPosition;

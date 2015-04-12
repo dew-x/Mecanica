@@ -81,8 +81,37 @@ vector<glm::vec3> Cube::getQuads(){
 }
 
 bool Cube::isInside(glm::vec3 particle){
-	if (particle.x < (center.x + distances.x) && particle.y < (center.y + distances.y) && particle.z < (center.z + distances.z)) return true;
+	bool tx = (particle.x>center.x&&particle.x<center.x + distances.x);
+	bool ty = (particle.y>center.y&&particle.y<center.y + distances.y);
+	bool tz = (particle.z>center.z&&particle.z<center.z + distances.z);
+	if (tx&&ty&&tz) return true;
 	else return false;
+}
+
+glm::vec3 Cube::normalCol(glm::vec3 targ, glm::vec3 orig) {
+	bool tx = (targ.x>center.x&&targ.x<center.x+distances.x);
+	bool ox = (orig.x>center.x&&orig.x<center.x + distances.x);
+	bool ty = (targ.y>center.y&&targ.y<center.y + distances.y);
+	bool oy = (orig.y>center.y&&orig.y<center.y + distances.y);
+	bool tz = (targ.z>center.z&&targ.z<center.z + distances.z);
+	bool oz = (orig.z>center.z&&orig.z<center.z + distances.z);
+	glm::vec3 v = { 0.0f, 0.0f, 0.0f };
+	if (tx != ox) {
+		v.x = orig.x - targ.x;
+		return glm::normalize(v);
+	}
+	else if (ty != oy) {
+		v.y = orig.y - targ.y;
+		return glm::normalize(v);
+	}
+	else if (tz != oz) {
+		v.z = orig.z - targ.z;
+		return glm::normalize(v);
+	}
+	else {
+		return v;
+		cout << "BIG ERROR" << endl;
+	}
 }
 
 

@@ -11,7 +11,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Camera.h"
 #include "Cube.h"
 #include "Sphere.h"
 #include "Triangle.h"
@@ -20,7 +19,7 @@ using namespace std;
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
-#define MAX_PARTICLES 1000
+#define MAX_PARTICLES 2000
 struct bs{
 	unsigned begin, end;
 };
@@ -67,7 +66,6 @@ int main(int argc, char *argv[])
 	glewInit();
 	// Define the viewport dimensions
 	glViewport(0, 0, WIDTH, HEIGHT);
-	Camera camera;
 	vector<GLfloat> vert = {
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
 	};
@@ -97,9 +95,11 @@ int main(int argc, char *argv[])
 		vert.push_back(1.0);
 	}
 	// plane
-	Point p1(-3, 4, -3);
-	Point p2(-1, 3, -3);
-	Point p3(-3, 2, -1);
+	Point p1(-0.5, 2, -3.5);
+	Point p2(-3.5, 3, -0.5);
+	Point p3(-0.5, 2.5, -0.5);
+	
+	
 	Triangle tri(p1, p2, p3);
 	vector<glm::vec3> tmpt=tri.getVertex();
 	for (unsigned i = 0; i < tmpt.size(); ++i) {
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 		vert.push_back(1.0);
 	}
 	// cube
-	Cube cube({ 3.0f, 0.0f, 3.0f }, { 2.0f, 2.0f, 2.0f });
+	Cube cube({ -0.0f, 0.0f, -0.0f }, { 2.0f, 2.0f, 2.0f });
 	vector<glm::vec3> tmpc = cube.getQuads();
 	for (unsigned i = 0; i < tmpc.size(); ++i) {
 		vert.push_back(tmpc[i].x);
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 	for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
 		particles[i].setPosition({ 0.0f, 0.0f, 0.0f });
 		particles[i].setForce({ 0.0f, 0.0f, 0.0f });
-		particles[i].setBouncing(0.9f);
+		particles[i].setBouncing(0.6f);
 	}
 	unsigned fid=0;
 	GLuint VBO, VAO;
@@ -180,42 +180,27 @@ int main(int argc, char *argv[])
 	glEnableVertexAttribArray(colAttrib);
 	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
 		5 * sizeof(float), (void*)(2 * sizeof(float)));*/
-	glm::vec3 camTranslate = { 0.0f, 0.0f, 0.0f };
-	float camAngle = 0.0f;
-	glm::vec3 camRotate = { 0.0f, 0.0f, 1.0f };
-	glm::vec3 camScale = { 1.0f, 1.0f, 1.0f };
-	camera.setPlanes(0.1f, 100.0f);
-	camera.setDepth(90.0f);
-	camera.setPos(0.0f, 0.0f, 12.0f);
 	glEnable(GL_DEPTH_TEST);
 	unsigned last = SDL_GetTicks();
 	while (true)
 	{
-		camera.setRatio(WIDTH, HEIGHT);
-		camera.setCamera(1);
-		// ---------------------------  CAMERA INTERACTION  -----------------------------
-		camera.getViewMatrix() = glm::translate(camera.getViewMatrix(), camTranslate);
-		if (camAngle != 0) camera.getViewMatrix() = glm::rotate(camera.getViewMatrix(), glm::radians(camAngle), camRotate);
-		camera.getViewMatrix() = glm::scale(camera.getViewMatrix(), camScale);
 		//glUniform3f(uniColor, (sin(SDL_GetTicks() / 200.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
 		if (SDL_PollEvent(&windowEvent))
 		{
 			if (windowEvent.type == SDL_QUIT) break;
 			else if (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_ESCAPE) break;
 			else if (windowEvent.type == SDL_MOUSEWHEEL) {
-				camScale += (windowEvent.wheel.y < 0.0f) ? -0.05f : 0.05f;
-				if (camScale.x <= 0.15f && camScale.y <= 0.15f && camScale.z <= 0.15f) camScale += glm::vec3(0.05f, 0.05f, 0.05f);
-				if (camScale.x >= 10.0f && camScale.y >= 10.0f && camScale.z >= 10.0f) camScale -= glm::vec3(0.05f, 0.05f, 0.05f);
-				//cout << "scX: " << scaleVec.x << "  scY: " << scaleVec.y << "  scZ: " << scaleVec.z << endl;
+				// scale
 			}
 			else if (windowEvent.type == SDL_KEYDOWN) {
-				if (windowEvent.key.keysym.sym == SDLK_UP || windowEvent.key.keysym.sym == SDLK_w) camTranslate.x += 0.02f;
-				else if (windowEvent.key.keysym.sym == SDLK_LEFT || windowEvent.key.keysym.sym == SDLK_a) camTranslate.y += 0.02f;
-				else if (windowEvent.key.keysym.sym == SDLK_DOWN || windowEvent.key.keysym.sym == SDLK_s) camTranslate.x -= 0.02f;
-				else if (windowEvent.key.keysym.sym == SDLK_RIGHT || windowEvent.key.keysym.sym == SDLK_d) camTranslate.y -= 0.02f;
+				if (windowEvent.key.keysym.sym == SDLK_UP || windowEvent.key.keysym.sym == SDLK_w) ;
+				else if (windowEvent.key.keysym.sym == SDLK_LEFT || windowEvent.key.keysym.sym == SDLK_a) ;
+				else if (windowEvent.key.keysym.sym == SDLK_DOWN || windowEvent.key.keysym.sym == SDLK_s) ;
+				else if (windowEvent.key.keysym.sym == SDLK_RIGHT || windowEvent.key.keysym.sym == SDLK_d) ;
+				else if (windowEvent.key.keysym.sym == SDLK_1) spawnMode=FOUNTAIN;
+				else if (windowEvent.key.keysym.sym == SDLK_2) spawnMode = CASCADE;
 			}
 		}
-		camAngle += 0.001f;
 		// Render
 		// Clear the colorbuffer
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -293,29 +278,35 @@ int main(int argc, char *argv[])
 
 		SDL_GL_SwapWindow(window);
 		unsigned current = SDL_GetTicks();
-		cout <<"frame length "<< current - last << endl;
+		//cout <<"frame length "<< current - last << endl;
 		if (spawnMode == FOUNTAIN) {
 			// spawn particle
 			unsigned pid = fid%MAX_PARTICLES;
-			particles[pid].setPosition({ 0.0f, 2.0f, 0.0f });
+			particles[pid].setPosition({ 0.0f, 2.1f, 0.0f });
 			particles[pid].setForce({ 0.0f, -9.8f, 0.0f });
-			particles[pid].setVelocity({ (randClamp() - 0.5)*0.2, 4.0f+randClamp() * 4.0f, (randClamp() - 0.5)*0.2 });
+			particles[pid].setVelocity({ (randClamp() - 0.5)*2.5, 4.0f + randClamp() * 4.0f, (randClamp() - 0.5)*2.5 });
 		}
 		else if (spawnMode == CASCADE) {
 			// spawn particle
 			unsigned pid = fid%MAX_PARTICLES;
-			particles[pid].setPosition({ 0.0f, 2.0f, 0.0f });
+			particles[pid].setPosition({ 0.0f, 5.0f, 0.0f });
 			particles[pid].setForce({ 0.0f, -9.8f, 0.0f });
-			particles[pid].setVelocity({ (randClamp() - 0.5)*0.1, randClamp(), (randClamp() - 0.5)*0.1 });
+			particles[pid].setVelocity({ (randClamp() - 0.5)*2.5, 0.0f, (randClamp() - 0.5)*2.5 });
 		}
 		for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
-			for (unsigned step = 0; step < current - last; ++step) {
+			for (unsigned step = 0; step < (current - last); ++step) {
 				particles[i].updateParticle(0.001f,Particle::UpdateMethod::EulerSemi);
 				particles[i].cubeCollision(world);
 				particles[i].cubeCollision(cube);
 				particles[i].triangleCollision(tri);
 				particles[i].sphereCollision(sphere);
 			}
+			/*unsigned dist = (current - last) % 10;
+			particles[i].updateParticle(0.001f*dist, Particle::UpdateMethod::EulerSemi);
+			particles[i].cubeCollision(world);
+			particles[i].cubeCollision(cube);
+			particles[i].triangleCollision(tri);
+			particles[i].sphereCollision(sphere);*/
 		}
 		last = current;
 		++fid;

@@ -180,12 +180,43 @@ void Particle::updateSpring(Particle &p, float ke, float kd, float longitud) {
 	p.addForce(0, -9.8f, 0);
 }
 
-void Particle::cubeCollision(const Cube &c) {
-
+void Particle::cubeCollision(Cube &c) {
+	if (c.isInside(m_currentPosition) != c.isInside(m_previousPosition)) {
+		// need to calc normal and D
+		glm::vec3 normal = c.normalCol(m_currentPosition,m_previousPosition);
+		float D = glm::dot(-normal, m_previousPosition);
+		glm::vec3 newPos = m_previousPosition - glm::dot((1 + m_bouncing), (glm::dot(normal, m_currentPosition) + D))*normal;
+		glm::vec3 newVel = m_previousVelocity - glm::dot((1 + m_bouncing), (glm::dot(normal, m_velocity)))*normal;
+		setPosition(newPos);
+		setVelocity(newVel);
+	}
 }
-void Particle::triangleCollision(const Triangle &t) {
-
+void Particle::triangleCollision(Triangle &t) {
+	Point p1(m_previousPosition.x, m_previousPosition.y, m_previousPosition.z);
+	Point p2(m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
+	if (t.tPlane->isInFront(p1) != t.tPlane->isInFront(p2)) {
+		Line l(p1, p2);
+		bool inside;
+		Point p = t.entryPointSegmentPlane(l, inside);
+		if (inside) {
+			//glm::vec3 normal = -t.tPlane->norm;
+			glm::vec3 normal = glm::normalize(p.coord - m_previousPosition);
+			float D = glm::dot(-normal, p.coord);
+			glm::vec3 newPos = m_previousPosition - glm::dot((1 + m_bouncing), (glm::dot(normal, m_currentPosition) + D))*normal;
+			glm::vec3 newVel = m_previousVelocity - glm::dot((1 + m_bouncing), (glm::dot(normal, m_velocity)))*normal;
+			setPosition(newPos);
+			setVelocity(newVel);
+		}
+	}
 }
-void Particle::sphereCollision(const Sphere &s) {
-
+void Particle::sphereCollision(Sphere &s) {
+	Point p1(m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
+	if (s.isPointInside(p1)) {
+		glm::vec3 normal = glm::normalize(m_currentPosition - s.center.coord);
+		float D = glm::dot(-normal, m_currentPosition);
+		glm::vec3 newPos = m_previousPosition - glm::dot((1 + m_bouncing), (glm::dot(normal, m_currentPosition) + D))*normal;
+		glm::vec3 newVel = m_previousVelocity - glm::dot((1 + m_bouncing), (glm::dot(normal, m_velocity)))*normal;
+		setPosition(newPos);
+		setVelocity(newVel);
+	}
 }
