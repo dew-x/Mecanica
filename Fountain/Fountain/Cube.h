@@ -15,5 +15,6 @@ public:
 	~Cube();
 	vector<glm::vec3> Cube::getVertices();
 	vector<glm::vec3> Cube::getQuads();
+	bool Cube::isInside(glm::vec3 particle);
 };
 

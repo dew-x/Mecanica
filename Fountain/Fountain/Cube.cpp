@@ -80,5 +80,10 @@ vector<glm::vec3> Cube::getQuads(){
 	return cubeQuads;
 }
 
+bool Cube::isInside(glm::vec3 particle){
+	if (particle.x < (center.x + distances.x) && particle.y < (center.y + distances.y) && particle.z < (center.z + distances.z)) return true;
+	else return false;
+}
+
 
 
