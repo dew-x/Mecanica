@@ -15,16 +15,24 @@
 #include "Cube.h"
 #include "Sphere.h"
 #include "Triangle.h"
+#include "Particle.h"
 using namespace std;
 
-#define VOSIZE 3
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
-
+#define MAX_PARTICLES 1000
 struct bs{
 	unsigned begin, end;
 };
 
+enum mode {
+	FOUNTAIN,
+	CASCADE
+};
+
+float randClamp() {
+	return float(rand()) / RAND_MAX;
+}
 
 std::string get_file_contents(std::string fname) {
 	std::ifstream file(fname);
@@ -59,107 +67,9 @@ int main(int argc, char *argv[])
 	glewInit();
 	// Define the viewport dimensions
 	glViewport(0, 0, WIDTH, HEIGHT);
-	GLfloat vertices[] = {
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-	};
-	// World space positions of our cubes
-	glm::vec3 cubePositions[] = {
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(2.0f, 5.0f, -15.0f),
-		glm::vec3(-1.5f, -2.2f, -2.5f),
-		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
-		glm::vec3(-1.7f, 3.0f, -7.5f),
-		glm::vec3(1.3f, -2.0f, -2.5f),
-		glm::vec3(1.5f, 2.0f, -2.5f),
-		glm::vec3(1.5f, 0.2f, -1.5f),
-		glm::vec3(-1.3f, 1.0f, -1.5f)
-	};
 	Camera camera;
-	GLfloat vertex[] = {
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-	};
 	vector<GLfloat> vert = {
+		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
 	};
 	// world
 	Cube world({ -5, 0, -5 }, { 10, 10, 10 });
@@ -170,19 +80,19 @@ int main(int argc, char *argv[])
 		vert.push_back(tmpw[i].z);
 		vert.push_back(0.0);
 		vert.push_back(0.0);
-		vert.push_back(1.0);
+		vert.push_back(0.5);
 		vert.push_back(1.0f);
 	}
 	// sphere
 	Point center({ 0, 0, 0 });
 	Sphere sphere(center,2);
-	vector<glm::vec3> tmps = sphere.getVertexSphere(4.0);
+	vector<glm::vec3> tmps = sphere.getVertexSphere(10);
 	for (unsigned i = 0; i < tmps.size(); ++i) {
 		vert.push_back(tmps[i].x);
 		vert.push_back(tmps[i].y);
 		vert.push_back(tmps[i].z);
 		vert.push_back(0.0);
-		vert.push_back(1.0);
+		vert.push_back(0.5);
 		vert.push_back(0.0);
 		vert.push_back(1.0);
 	}
@@ -196,7 +106,7 @@ int main(int argc, char *argv[])
 		vert.push_back(tmpt[i].x);
 		vert.push_back(tmpt[i].y);
 		vert.push_back(tmpt[i].z);
-		vert.push_back(1.0);
+		vert.push_back(0.5);
 		vert.push_back(0.0);
 		vert.push_back(0.0);
 		vert.push_back(1.0);
@@ -208,19 +118,26 @@ int main(int argc, char *argv[])
 		vert.push_back(tmpc[i].x);
 		vert.push_back(tmpc[i].y);
 		vert.push_back(tmpc[i].z);
-		vert.push_back(1.0);
-		vert.push_back(1.0);
-		vert.push_back(1.0);
+		vert.push_back(0.5);
+		vert.push_back(0.0);
+		vert.push_back(0.0);
 		vert.push_back(1.0);
 	}
 	for (unsigned i = 0; i < vert.size(); ++i) {
 		if (i % 7 == 0) cout << endl;
 		cout << vert[i] << " ";
-		
 	}
+	// particles
+	vector<Particle> particles(MAX_PARTICLES);
+	for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
+		particles[i].setPosition({ 0.0f, 0.0f, 0.0f });
+		particles[i].setForce({ 0.0f, 0.0f, 0.0f });
+		particles[i].setBouncing(0.9f);
+	}
+	unsigned fid=0;
 	GLuint VBO, VAO;
-	glGenVertexArrays(VOSIZE, &VAO);
-	glGenBuffers(VOSIZE, &VBO);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
 	// vertex bind
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -229,11 +146,8 @@ int main(int argc, char *argv[])
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
-	// Position attribute
-	
-	// TexCoord attribute
-
 	glBindVertexArray(0); // Unbind VAO
+
 	// shadders
 	// Create and compile the vertex shader
 	std::string vContent = get_file_contents("./shaders/vertex-shader.txt");
@@ -256,7 +170,7 @@ int main(int argc, char *argv[])
 	//glBindFragDataLocation(shaderProgram, 0, "outColor");
 	glLinkProgram(shaderProgram);
 	
-
+	mode spawnMode = FOUNTAIN;
 	/*GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
 	glEnableVertexAttribArray(posAttrib);
 	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE,
@@ -272,8 +186,9 @@ int main(int argc, char *argv[])
 	glm::vec3 camScale = { 1.0f, 1.0f, 1.0f };
 	camera.setPlanes(0.1f, 100.0f);
 	camera.setDepth(90.0f);
-	camera.setPos(0.0f, 0.0f, 22.0f);
+	camera.setPos(0.0f, 0.0f, 12.0f);
 	glEnable(GL_DEPTH_TEST);
+	unsigned last = SDL_GetTicks();
 	while (true)
 	{
 		camera.setRatio(WIDTH, HEIGHT);
@@ -315,23 +230,32 @@ int main(int argc, char *argv[])
 		//glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
 		//glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
 		glm::mat4 view;
-		GLfloat radius = 20.0f;
-		GLfloat camX = sin(SDL_GetTicks() / 800.0f) * radius;
-		GLfloat camZ = cos(SDL_GetTicks() / 800.0f) * radius;
+		GLfloat radius = 5.0f;
+		GLfloat camX = sin(SDL_GetTicks() / 1600.0f) * radius;
+		GLfloat camZ = cos(SDL_GetTicks() / 1600.0f) * radius;
 		view = glm::lookAt(glm::vec3(camX, 10.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		// Projection 
 		glm::mat4 projection;
-		projection = glm::perspective(2.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
+		projection = glm::perspective(1.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, vert.size());
+		glDrawArrays(GL_TRIANGLES, 1, vert.size()/7);
 		/*for (unsigned i = 0; i < VOSIZE; ++i) {
 			if (i == 0) glDrawArrays(GL_QUADS, LOC[i].begin, LOC[i].end);
 			else if (i == 1) glDrawArrays(GL_TRIANGLES, LOC[i].begin, LOC[i].end);
 			else if (i == 2) glDrawArrays(GL_POINT, LOC[i].begin, LOC[i].end);
 		}*/
+		for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
+			glm::mat4 model;
+			glm::vec3 pos = particles[i].getCurrentPosition();
+			model = glm::translate(model, pos);
+			//GLfloat angle = 20.0f * i;
+			//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glDrawArrays(GL_POINTS, 0, 1);
+		}
 		glBindVertexArray(0);
 		// Activate shader
 		//glUseProgram(shaderProgram);
@@ -368,13 +292,40 @@ int main(int argc, char *argv[])
 		glBindVertexArray(0);*/
 
 		SDL_GL_SwapWindow(window);
+		unsigned current = SDL_GetTicks();
+		cout <<"frame length "<< current - last << endl;
+		if (spawnMode == FOUNTAIN) {
+			// spawn particle
+			unsigned pid = fid%MAX_PARTICLES;
+			particles[pid].setPosition({ 0.0f, 2.0f, 0.0f });
+			particles[pid].setForce({ 0.0f, -9.8f, 0.0f });
+			particles[pid].setVelocity({ (randClamp() - 0.5)*0.2, 4.0f+randClamp() * 4.0f, (randClamp() - 0.5)*0.2 });
+		}
+		else if (spawnMode == CASCADE) {
+			// spawn particle
+			unsigned pid = fid%MAX_PARTICLES;
+			particles[pid].setPosition({ 0.0f, 2.0f, 0.0f });
+			particles[pid].setForce({ 0.0f, -9.8f, 0.0f });
+			particles[pid].setVelocity({ (randClamp() - 0.5)*0.1, randClamp(), (randClamp() - 0.5)*0.1 });
+		}
+		for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
+			for (unsigned step = 0; step < current - last; ++step) {
+				particles[i].updateParticle(0.001f,Particle::UpdateMethod::EulerSemi);
+				particles[i].cubeCollision(world);
+				particles[i].cubeCollision(cube);
+				particles[i].triangleCollision(tri);
+				particles[i].sphereCollision(sphere);
+			}
+		}
+		last = current;
+		++fid;
 	}
 	glDeleteProgram(shaderProgram);
 	glDeleteShader(fragmentShader);
 	glDeleteShader(vertexShader);
-
-	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteVertexArrays(1, &VAO);
+	
 	SDL_DestroyWindow(window);
 	SDL_GL_DeleteContext(context);
 	SDL_Quit();
