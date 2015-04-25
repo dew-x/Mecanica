@@ -302,13 +302,14 @@ int main(int argc, char *argv[])
 			particles[pid].setForce({ 0.0f, -9.8f, 0.0f });
 			particles[pid].setVelocity({ (randClamp() - 0.5)*2.5, 0.0f, (randClamp() - 0.5)*2.5 });
 		}
-		for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
-			for (unsigned step = 0; step < (current - last); ++step) {
-				particles[i].updateParticle(0.001f,Particle::UpdateMethod::EulerSemi);
-				particles[i].cubeCollision(world);
-				particles[i].cubeCollision(cube);
-				particles[i].triangleCollision(tri);
-				particles[i].sphereCollision(sphere);
+		for (unsigned step = 0; step < (current - last); ++step) {
+			for (unsigned i = 0; i < corda.size(); ++i) {
+				Particle *p = corda.getPart(i);
+				p->updateParticle(0.001f,Particle::UpdateMethod::EulerSemi);
+				p->cubeCollision(world);
+				p->cubeCollision(cube);
+				p->triangleCollision(tri);
+				p->sphereCollision(sphere);
 			}
 			/*unsigned dist = (current - last) % 10;
 			particles[i].updateParticle(0.001f*dist, Particle::UpdateMethod::EulerSemi);
