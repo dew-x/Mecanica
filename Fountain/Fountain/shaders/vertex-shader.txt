@@ -1,9 +1,9 @@
 #version 150
 
 	//vec3 means a vector of 3 positions that will manage x, y, z
-layout (location = 0) in vec3 vertexPosition;
+in vec3 vertexPosition;
 	//vec4 means a vector of 4 positions that will manage RGBA		
-layout (location = 1) in vec4 vertexColor;
+in vec4 vertexColor;
 
 	//Send the color of the vertex to the fragment shader
 out vec4 fragmentColor;
