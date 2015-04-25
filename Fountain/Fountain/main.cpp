@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
 	// Define the viewport dimensions
 	glViewport(0, 0, WIDTH, HEIGHT);
 	vector<GLfloat> vert = {
+		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
 	};
 	// world
@@ -235,20 +236,29 @@ int main(int argc, char *argv[])
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 1, vert.size()/7);
+		glDrawArrays(GL_TRIANGLES, 2, vert.size()/7);
 		/*for (unsigned i = 0; i < VOSIZE; ++i) {
 			if (i == 0) glDrawArrays(GL_QUADS, LOC[i].begin, LOC[i].end);
 			else if (i == 1) glDrawArrays(GL_TRIANGLES, LOC[i].begin, LOC[i].end);
 			else if (i == 2) glDrawArrays(GL_POINT, LOC[i].begin, LOC[i].end);
 		}*/
-		for (unsigned i = 0; i < corda.size(); ++i) {
+		for (unsigned i = 1; i < corda.size(); ++i) {
 			glm::mat4 model;
 			glm::vec3 pos = corda.getPos(i);
-			model = glm::translate(model, pos);
+			//model = glm::translate(model, pos);
 			//GLfloat angle = 20.0f * i;
 			//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glDrawArrays(GL_POINTS, 0, 1);
+			glm::vec3 p1 = corda.getPos(i-1);
+			glm::vec3 p2 = corda.getPos(i);
+			vert[0] = p1.x;
+			vert[1] = p1.y;
+			vert[2] = p1.z;
+			vert[0+7] = p2.x;
+			vert[1+7] = p2.y;
+			vert[2+7] = p2.z;
+			glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
+			glDrawArrays(GL_LINES, 0, 2);
 		}
 		glBindVertexArray(0);
 		// Activate shader
