@@ -15,6 +15,7 @@
 #include "Sphere.h"
 #include "Triangle.h"
 #include "Particle.h"
+#include "Corda.h"
 using namespace std;
 
 // Window dimensions
@@ -127,6 +128,8 @@ int main(int argc, char *argv[])
 		if (i % 7 == 0) cout << endl;
 		cout << vert[i] << " ";
 	}
+	//corda 
+	Corda corda;
 	// particles
 	vector<Particle> particles(MAX_PARTICLES);
 	for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
@@ -197,8 +200,15 @@ int main(int argc, char *argv[])
 				else if (windowEvent.key.keysym.sym == SDLK_LEFT || windowEvent.key.keysym.sym == SDLK_a) ;
 				else if (windowEvent.key.keysym.sym == SDLK_DOWN || windowEvent.key.keysym.sym == SDLK_s) ;
 				else if (windowEvent.key.keysym.sym == SDLK_RIGHT || windowEvent.key.keysym.sym == SDLK_d) ;
-				else if (windowEvent.key.keysym.sym == SDLK_1) spawnMode=FOUNTAIN;
-				else if (windowEvent.key.keysym.sym == SDLK_2) spawnMode = CASCADE;
+				else if (windowEvent.key.keysym.sym == SDLK_0) corda.reset(corda_mode(0));
+				else if (windowEvent.key.keysym.sym == SDLK_1) { 
+					corda.reset(corda_mode(1));
+					spawnMode = FOUNTAIN; 
+				}
+				else if (windowEvent.key.keysym.sym == SDLK_2) { 
+					corda.reset(corda_mode(2));
+					spawnMode = CASCADE; 
+				}
 			}
 		}
 		// Render
