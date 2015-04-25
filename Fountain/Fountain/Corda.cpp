@@ -38,4 +38,3 @@ void Corda::reset(corda_mode mode) {
 	}
 }
 
-void Corda::
