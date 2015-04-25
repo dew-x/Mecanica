@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <stdlib.h>
 #include "Particle.h"
 
 enum corda_mode {
