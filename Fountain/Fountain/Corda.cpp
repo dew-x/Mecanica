@@ -12,8 +12,8 @@ bool inside(float val, float min, float max) {
 Corda::Corda()
 {
 	reset(ANCHOR1);
-	kElastic = 0.5;
-	kDumping = 0.2;
+	kElastic = 200;
+	kDumping = 2;
 }
 
 

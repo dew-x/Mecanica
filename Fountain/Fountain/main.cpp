@@ -132,13 +132,6 @@ int main(int argc, char *argv[])
 	//corda 
 	Corda corda;
 	// particles
-	vector<Particle> particles(MAX_PARTICLES);
-	for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
-		particles[i].setPosition({ 0.0f, 0.0f, 0.0f });
-		particles[i].setForce({ 0.0f, 0.0f, 0.0f });
-		particles[i].setBouncing(0.6f);
-	}
-	unsigned fid=0;
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -175,15 +168,6 @@ int main(int argc, char *argv[])
 	glLinkProgram(shaderProgram);
 	
 	mode spawnMode = FOUNTAIN;
-	/*GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE,
-		5 * sizeof(float), 0);
-
-	GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
-	glEnableVertexAttribArray(colAttrib);
-	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE,
-		5 * sizeof(float), (void*)(2 * sizeof(float)));*/
 	glEnable(GL_DEPTH_TEST);
 	unsigned last = SDL_GetTicks();
 	while (true)
@@ -203,14 +187,27 @@ int main(int argc, char *argv[])
 				else if (windowEvent.key.keysym.sym == SDLK_RIGHT || windowEvent.key.keysym.sym == SDLK_d) ;
 				else if (windowEvent.key.keysym.sym == SDLK_0) corda.reset(corda_mode(0));
 				else if (windowEvent.key.keysym.sym == SDLK_1) { 
-					corda.reset(corda_mode(1));
-					spawnMode = FOUNTAIN; 
+					corda.reset(corda_mode(1)); 
 				}else if (windowEvent.key.keysym.sym == SDLK_2) { 
 					corda.reset(corda_mode(2));
-					spawnMode = CASCADE; 
 				}
 			}
 		}
+		SDL_GL_SwapWindow(window);
+		unsigned current = SDL_GetTicks();
+		//cout <<"frame length "<< current - last << endl;
+		for (unsigned step = 0; step < (current - last); ++step) {
+			corda.updateForces();
+			for (unsigned i = 0; i < corda.size(); ++i) {
+				Particle *p = corda.getPart(i);
+				p->updateParticle(0.001f, Particle::UpdateMethod::EulerSemi);
+				p->cubeCollision(world);
+				p->cubeCollision(cube);
+				p->triangleCollision(tri);
+				p->sphereCollision(sphere);
+			}
+		}
+		last = current;
 		// Render
 		// Clear the colorbuffer
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -237,11 +234,6 @@ int main(int argc, char *argv[])
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 2, vert.size()/7);
-		/*for (unsigned i = 0; i < VOSIZE; ++i) {
-			if (i == 0) glDrawArrays(GL_QUADS, LOC[i].begin, LOC[i].end);
-			else if (i == 1) glDrawArrays(GL_TRIANGLES, LOC[i].begin, LOC[i].end);
-			else if (i == 2) glDrawArrays(GL_POINT, LOC[i].begin, LOC[i].end);
-		}*/
 		for (unsigned i = 1; i < corda.size(); ++i) {
 			glm::mat4 model;
 			glm::vec3 pos = corda.getPos(i);
@@ -261,75 +253,7 @@ int main(int argc, char *argv[])
 			glDrawArrays(GL_LINES, 0, 2);
 		}
 		glBindVertexArray(0);
-		// Activate shader
-		//glUseProgram(shaderProgram);
-
-		// Camera/View transformation
-		/*glm::mat4 view;
-		GLfloat radius = 10.0f;
-		GLfloat camX = sin(SDL_GetTicks()/800.0f) * radius;
-		GLfloat camZ = cos(SDL_GetTicks() / 800.0f) * radius;
-		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		// Projection 
-		glm::mat4 projection;
-		projection = glm::perspective(45.0f, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-		// Get the uniform locations
-		GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
-		GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
-		GLint projLoc = glGetUniformLocation(shaderProgram, "projection");
-		// Pass the matrices to the shader
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-		glBindVertexArray(VAO);
-		for (GLuint i = 0; i < 10; i++)
-		{
-			// Calculate the model matrix for each object and pass it to shader before drawing
-			glm::mat4 model;
-			model = glm::translate(model, cubePositions[i]);
-			GLfloat angle = 20.0f * i;
-			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-		glBindVertexArray(0);*/
-
-		SDL_GL_SwapWindow(window);
-		unsigned current = SDL_GetTicks();
-		//cout <<"frame length "<< current - last << endl;
-		if (spawnMode == FOUNTAIN) {
-			// spawn particle
-			unsigned pid = fid%MAX_PARTICLES;
-			particles[pid].setPosition({ 0.0f, 2.1f, 0.0f });
-			particles[pid].setForce({ 0.0f, -9.8f, 0.0f });
-			particles[pid].setVelocity({ (randClamp() - 0.5)*2.5, 4.0f + randClamp() * 4.0f, (randClamp() - 0.5)*2.5 });
-		}
-		else if (spawnMode == CASCADE) {
-			// spawn particle
-			unsigned pid = fid%MAX_PARTICLES;
-			particles[pid].setPosition({ 0.0f, 5.0f, 0.0f });
-			particles[pid].setForce({ 0.0f, -9.8f, 0.0f });
-			particles[pid].setVelocity({ (randClamp() - 0.5)*2.5, 0.0f, (randClamp() - 0.5)*2.5 });
-		}
-		for (unsigned step = 0; step < (current - last); ++step) {
-			for (unsigned i = 0; i < corda.size(); ++i) {
-				Particle *p = corda.getPart(i);
-				p->updateParticle(0.001f,Particle::UpdateMethod::EulerSemi);
-				p->cubeCollision(world);
-				p->cubeCollision(cube);
-				p->triangleCollision(tri);
-				p->sphereCollision(sphere);
-			}
-			/*unsigned dist = (current - last) % 10;
-			particles[i].updateParticle(0.001f*dist, Particle::UpdateMethod::EulerSemi);
-			particles[i].cubeCollision(world);
-			particles[i].cubeCollision(cube);
-			particles[i].triangleCollision(tri);
-			particles[i].sphereCollision(sphere);*/
-		}
-		last = current;
-		++fid;
+		
 	}
 	glDeleteProgram(shaderProgram);
 	glDeleteShader(fragmentShader);
