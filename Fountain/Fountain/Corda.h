@@ -30,10 +30,25 @@ public:
 		}
 		else {
 			particles[id].setForce({ 0.0f, -9.8f, 0.0f });
+			if (id - 1 >= 0){
+				float dist = glm::distance(particles[id - 1].getCurrentPosition(), particles[id].getCurrentPosition());
+				glm::vec3 norm = (particles[id].getCurrentPosition() - particles[id - 1].getCurrentPosition()) / dist;
+				glm::vec3 velR = particles[id].getVelocity() - particles[id - 1].getVelocity();
+				glm::vec3 force = (kElastic*(dist - CORDA_DIST)) + kDumping * (glm::dot(velR, norm))*norm;
+				particles[id].addForce(force);
+			}if (id + 1 < CORDA_SIZE){
+				float dist = glm::distance(particles[id + 1].getCurrentPosition(), particles[id].getCurrentPosition());
+				glm::vec3 norm = (particles[id].getCurrentPosition() - particles[id + 1].getCurrentPosition()) / dist;
+				glm::vec3 velR = particles[id].getVelocity() - particles[id + 1].getVelocity();
+				glm::vec3 force = (kElastic*(dist - CORDA_DIST)) + kDumping * (glm::dot(velR, norm))*norm;
+				particles[id].addForce(force);
+			}
 			//particles[id].addForce(f1);
 			//particles[id].addForce(f2);
 		}
 		return &particles[id];
 	};
+	float kElastic;
+	float kDumping;
 };
 
