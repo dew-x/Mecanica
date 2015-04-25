@@ -204,8 +204,7 @@ int main(int argc, char *argv[])
 				else if (windowEvent.key.keysym.sym == SDLK_1) { 
 					corda.reset(corda_mode(1));
 					spawnMode = FOUNTAIN; 
-				}
-				else if (windowEvent.key.keysym.sym == SDLK_2) { 
+				}else if (windowEvent.key.keysym.sym == SDLK_2) { 
 					corda.reset(corda_mode(2));
 					spawnMode = CASCADE; 
 				}
@@ -242,9 +241,9 @@ int main(int argc, char *argv[])
 			else if (i == 1) glDrawArrays(GL_TRIANGLES, LOC[i].begin, LOC[i].end);
 			else if (i == 2) glDrawArrays(GL_POINT, LOC[i].begin, LOC[i].end);
 		}*/
-		for (unsigned i = 0; i < MAX_PARTICLES; ++i) {
+		for (unsigned i = 0; i < corda.size(); ++i) {
 			glm::mat4 model;
-			glm::vec3 pos = particles[i].getCurrentPosition();
+			glm::vec3 pos = corda.getPos(i);
 			model = glm::translate(model, pos);
 			//GLfloat angle = 20.0f * i;
 			//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
