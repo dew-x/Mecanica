@@ -37,3 +37,5 @@ void Corda::reset(corda_mode mode) {
 		randz = newz;
 	}
 }
+
+void Corda::

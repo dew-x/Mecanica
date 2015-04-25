@@ -20,5 +20,7 @@ public:
 	Corda();
 	~Corda();
 	void reset(corda_mode mode);
+	unsigned size() { return CORDA_SIZE; };
+	glm::vec3 getPos(unsigned id) { return particles[id].getCurrentPosition(); };
 };
 
