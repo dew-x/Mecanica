@@ -199,8 +199,8 @@ void Particle::triangleCollision(Triangle &t) {
 		bool inside;
 		Point p = t.entryPointSegmentPlane(l, inside);
 		if (inside) {
-			//glm::vec3 normal = -t.tPlane->norm;
-			glm::vec3 normal = glm::normalize(p.coord - m_previousPosition);
+			glm::vec3 normal = glm::normalize(-t.tPlane->norm);
+			//glm::vec3 normal = glm::normalize(p.coord - m_previousPosition);
 			float D = glm::dot(-normal, p.coord);
 			glm::vec3 newPos = m_previousPosition - glm::dot((1 + m_bouncing), (glm::dot(normal, m_currentPosition) + D))*normal;
 			glm::vec3 newVel = m_previousVelocity - glm::dot((1 + m_bouncing), (glm::dot(normal, m_velocity)))*normal;
