@@ -20,6 +20,7 @@ Corda::~Corda()
 }
 
 void Corda::reset(corda_mode mode) {
+	this->mode = mode;
 	particles = std::vector<Particle>(CORDA_SIZE);
 	float randx = 0.0f;//random(-3.0f, 3.0f);
 	float randz = 0.0f;//random(-3.0f, 3.0f);
