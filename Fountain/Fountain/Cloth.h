@@ -4,6 +4,26 @@
 
 #define CSIZE 50
 #define CDIST 0.1f
+std::vector<std::vector<int> > streach = {
+		{1,0},
+		{-1,0},
+		{0,1},
+		{0,-1}
+};
+
+std::vector<std::vector<int> > shear = {
+		{ 1, 1 },
+		{ -1, 1 },
+		{ 1, -1 },
+		{ -1, -1 }
+};
+
+std::vector<std::vector<int> > bend = {
+		{ 2, 0 },
+		{ -2, 0 },
+		{ 0, 2 },
+		{ 0, -2 }
+};
 
 class Cloth {
 private:
