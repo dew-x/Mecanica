@@ -16,6 +16,7 @@
 #include "Triangle.h"
 #include "Particle.h"
 #include "Corda.h"
+#include "Cloth.h"
 using namespace std;
 
 // Window dimensions
@@ -68,6 +69,8 @@ int main(int argc, char *argv[])
 	// Define the viewport dimensions
 	glViewport(0, 0, WIDTH, HEIGHT);
 	vector<GLfloat> vert = {
+		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
 	};
@@ -130,7 +133,7 @@ int main(int argc, char *argv[])
 		cout << vert[i] << " ";
 	}
 	//corda 
-	Corda corda;
+	Cloth cloth;
 	// particles
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
@@ -185,21 +188,21 @@ int main(int argc, char *argv[])
 				else if (windowEvent.key.keysym.sym == SDLK_LEFT || windowEvent.key.keysym.sym == SDLK_a) ;
 				else if (windowEvent.key.keysym.sym == SDLK_DOWN || windowEvent.key.keysym.sym == SDLK_s) ;
 				else if (windowEvent.key.keysym.sym == SDLK_RIGHT || windowEvent.key.keysym.sym == SDLK_d) ;
-				else if (windowEvent.key.keysym.sym == SDLK_0) corda.reset(corda_mode(0));
+				//else if (windowEvent.key.keysym.sym == SDLK_0) corda.reset(corda_mode(0));
 				else if (windowEvent.key.keysym.sym == SDLK_1) { 
-					corda.reset(corda_mode(1)); 
-				}else if (windowEvent.key.keysym.sym == SDLK_2) { 
+					cloth.reset(5); 
+				}/*else if (windowEvent.key.keysym.sym == SDLK_2) { 
 					corda.reset(corda_mode(2));
-				}
+				}*/
 			}
 		}
 		SDL_GL_SwapWindow(window);
 		unsigned current = SDL_GetTicks();
 		//cout <<"frame length "<< current - last << endl;
 		for (unsigned step = 0; step < (current - last); ++step) {
-			corda.updateForces();
-			for (unsigned i = 0; i < corda.size(); ++i) {
-				Particle *p = corda.getPart(i);
+			cloth.updateForces();
+			for (unsigned i = 0; i < cloth.getSize()*cloth.getSize(); ++i) {
+				Particle *p = cloth.getPart(i);
 				p->updateParticle(0.001f, Particle::UpdateMethod::EulerSemi);
 				p->cubeCollision(world);
 				p->cubeCollision(cube);
@@ -233,24 +236,33 @@ int main(int argc, char *argv[])
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 2, vert.size()/7);
-		for (unsigned i = 1; i < corda.size(); ++i) {
-			glm::mat4 model;
-			glm::vec3 pos = corda.getPos(i);
-			//model = glm::translate(model, pos);
-			//GLfloat angle = 20.0f * i;
-			//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glm::vec3 p1 = corda.getPos(i-1);
-			glm::vec3 p2 = corda.getPos(i);
-			vert[0] = p1.x;
-			vert[1] = p1.y;
-			vert[2] = p1.z;
-			vert[0+7] = p2.x;
-			vert[1+7] = p2.y;
-			vert[2+7] = p2.z;
-			glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
-			glDrawArrays(GL_LINES, 0, 2);
+		glDrawArrays(GL_TRIANGLES, 4, vert.size()/7);
+		for (unsigned i = 1; i < cloth.getSize(); ++i) {
+			for (unsigned j = 1; j < cloth.getSize(); ++j) {
+				glm::mat4 model;
+				glm::vec3 pos0 = cloth.getPos((i-1)*cloth.getSize() + (j-1));
+				glm::vec3 pos1 = cloth.getPos(i*cloth.getSize() + (j-1));
+				glm::vec3 pos2 = cloth.getPos(i*cloth.getSize() + j);
+				glm::vec3 pos3 = cloth.getPos((i-1)*cloth.getSize()+j);
+				//model = glm::translate(model, pos);
+				//GLfloat angle = 20.0f * i;
+				//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
+				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+				vert[0] = pos0.x;
+				vert[1] = pos0.y;
+				vert[2] = pos0.z;
+				vert[0 + 7] = pos1.x;
+				vert[1 + 7] = pos1.y;
+				vert[2 + 7] = pos1.z;
+				vert[0 + 14] = pos2.x;
+				vert[1 + 14] = pos2.y;
+				vert[2 + 14] = pos2.z;
+				vert[0 + 21] = pos3.x;
+				vert[1 + 21] = pos3.y;
+				vert[2 + 21] = pos3.z;
+				glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
+				glDrawArrays(GL_QUADS, 0, 4);
+			}
 		}
 		glBindVertexArray(0);
 		
