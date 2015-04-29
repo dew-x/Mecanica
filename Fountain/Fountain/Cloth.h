@@ -42,5 +42,7 @@ public:
 
 	}
 	glm::vec3 getPos(unsigned id) { return particles[id].getCurrentPosition(); };
+	float kElastic;
+	float kDumping;
 };
 

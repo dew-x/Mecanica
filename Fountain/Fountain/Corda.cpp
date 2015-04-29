@@ -13,7 +13,7 @@ Corda::Corda()
 {
 	reset(ANCHOR1);
 	kElastic = 200;
-	kDumping = 2;
+	kDumping = 7;
 }
 
 
@@ -29,7 +29,7 @@ void Corda::reset(corda_mode mode) {
 	for (unsigned i = 0; i < CORDA_SIZE; ++i) {
 		float newz, newx;
 		do {
-			float ra = random(0, 2 * M_PI);
+			float ra = random(0, M_PI/2);
 			newx = randx+cos(ra)*CORDA_DIST;
 			newz = randz + sin(ra)*CORDA_DIST;
 		} while (!inside(newx, -4.0f, 4.0f) || !inside(newz, -4.0, 4.0f));

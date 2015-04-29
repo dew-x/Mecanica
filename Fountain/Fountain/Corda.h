@@ -10,7 +10,7 @@ enum corda_mode {
 	ANCHOR2,
 };
 
-#define CORDA_SIZE 100
+#define CORDA_SIZE 50
 #define CORDA_DIST 0.01f
 
 class Corda
