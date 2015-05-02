@@ -38,9 +38,7 @@ public:
 	unsigned getSize() {
 		return CSIZE;
 	}
-	void updateForces() {
-
-	}
+	void updateForces();
 	glm::vec3 getPos(unsigned id) { return particles[id].getCurrentPosition(); };
 	float kElastic;
 	float kDumping;
