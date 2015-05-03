@@ -38,9 +38,9 @@ void Cloth::updateForces(){
 			//streach
 			for (int x = 0; x < streach.size(); x++){
 				if (cinside((i+streach[x][0]),(j+streach[x][1]))){
-					float dist = glm::distance(particles[((i*streach[x][0])*CSIZE)+(j+streach[x][1])].getCurrentPosition(), particles[(i*CSIZE)+j].getCurrentPosition());
-					glm::vec3 norm = glm::normalize(particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition() - particles[(i*CSIZE) + j].getCurrentPosition());
-					glm::vec3 velR = particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
+					float dist = glm::distance(particles[((i+streach[x][0])*CSIZE)+(j+streach[x][1])].getCurrentPosition(), particles[(i*CSIZE)+j].getCurrentPosition());
+					glm::vec3 norm = glm::normalize(particles[((i+streach[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition() - particles[(i*CSIZE) + j].getCurrentPosition());
+					glm::vec3 velR = particles[((i+streach[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
 					glm::vec3 force = ((kElastic*(dist - CDIST)) + (kDumping * (glm::dot(velR, norm))))*norm;
 					particles[(i*CSIZE) + j].addForce(force);
 				}
@@ -48,9 +48,9 @@ void Cloth::updateForces(){
 			//shear
 			for (int x = 0; x < shear.size();x++){
 				if (cinside((i+shear[x][0]),(j+shear[x][1]))){
-					float dist = glm::distance(particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition(), particles[(i*CSIZE) + j].getCurrentPosition());
-					glm::vec3 norm = glm::normalize(particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition() - particles[(i*CSIZE) + j].getCurrentPosition());
-					glm::vec3 velR = particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
+					float dist = glm::distance(particles[((i+shear[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition(), particles[(i*CSIZE) + j].getCurrentPosition());
+					glm::vec3 norm = glm::normalize(particles[((i+shear[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition() - particles[(i*CSIZE) + j].getCurrentPosition());
+					glm::vec3 velR = particles[((i+shear[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
 					glm::vec3 force = ((kElastic*(dist - CDIST2)) + (kDumping * (glm::dot(velR, norm))))*norm;
 					particles[(i*CSIZE) + j].addForce(force);
 				}
@@ -58,9 +58,9 @@ void Cloth::updateForces(){
 			//bend
 			for (int x = 0; x < bend.size(); x++){
 				if (cinside((i + bend[x][0]), (j + bend[x][1]))){
-					float dist = glm::distance(particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition(), particles[(i*CSIZE) + j].getCurrentPosition());
-					glm::vec3 norm = glm::normalize(particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition() - particles[(i*CSIZE) + j].getCurrentPosition());
-					glm::vec3 velR = particles[((i*streach[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
+					float dist = glm::distance(particles[((i+bend[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition(), particles[(i*CSIZE) + j].getCurrentPosition());
+					glm::vec3 norm = glm::normalize(particles[((i+bend[x][0])*CSIZE) + (j + streach[x][1])].getCurrentPosition() - particles[(i*CSIZE) + j].getCurrentPosition());
+					glm::vec3 velR = particles[((i+bend[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
 					glm::vec3 force = ((kElastic*(dist - (CDIST*2))) + (kDumping * (glm::dot(velR, norm))))*norm;
 					particles[(i*CSIZE) + j].addForce(force);
 				}
