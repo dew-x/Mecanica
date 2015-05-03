@@ -5,6 +5,8 @@
 
 #define CSIZE 20
 #define CDIST 0.2f
+const float CDIST2= CDIST*sqrt(2);
+
 const std::vector<std::vector<int> > streach = {
 		{1,0},
 		{-1,0},
