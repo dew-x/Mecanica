@@ -12,6 +12,7 @@ bool cinside(int x,int y){
 Cloth::Cloth(){
 	kElastic = 200;
 	kDumping = 7;
+	reset(5.0);
 }
 
 
@@ -22,9 +23,9 @@ void Cloth::reset(float height) {
 	particles = std::vector<Particle>(CSIZE*CSIZE);
 	for (unsigned i = 0; i < CSIZE; ++i) {
 		for (unsigned j = 0; j < CSIZE; ++j) {
-			particles[i].setPosition({ mapf(i, 0, CSIZE - 1, -(CSIZE*CDIST) / 2,), height, mapf(j, 0, CSIZE - 1, -(CSIZE*CDIST) / 2,) });//retocar
-			particles[i].setForce({ 0.0f, -9.8f, 0.0f });
-			particles[i].setBouncing(0.6f);
+			particles[i*CSIZE+j].setPosition({ mapf(i, 0, CSIZE - 1, -(CSIZE*CDIST) / 2, (CSIZE*CDIST) / 2), height, mapf(j, 0, CSIZE - 1, -(CSIZE*CDIST) / 2, (CSIZE*CDIST) / 2) });//retocar
+			particles[i*CSIZE + j].setForce({ 0.0f, -9.8f, 0.0f });
+			particles[i*CSIZE + j].setBouncing(0.6f);
 		}
 	}
 }
@@ -33,7 +34,7 @@ void Cloth::updateForces(){
 	for (int i = 0;i < CSIZE;i++){
 		for (int j = 0;j < CSIZE;j++){
 			//apply gravity force
-	
+			particles[(i*CSIZE) + j].setForce({ 0, -9.8, 0 });
 			//streach
 			for (int x = 0; x < streach.size(); x++){
 				if (cinside((i+streach[x][0]),(j+streach[x][1]))){

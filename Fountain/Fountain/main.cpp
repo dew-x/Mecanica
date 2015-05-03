@@ -72,6 +72,8 @@ int main(int argc, char *argv[])
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
 	};
 	// world
@@ -236,14 +238,15 @@ int main(int argc, char *argv[])
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 4, vert.size()/7);
+		glDrawArrays(GL_TRIANGLES, 6, vert.size()/7);
+		// cloth.getSize()
 		for (unsigned i = 1; i < cloth.getSize(); ++i) {
 			for (unsigned j = 1; j < cloth.getSize(); ++j) {
 				glm::mat4 model;
-				glm::vec3 pos0 = cloth.getPos((i-1)*cloth.getSize() + (j-1));
-				glm::vec3 pos1 = cloth.getPos(i*cloth.getSize() + (j-1));
-				glm::vec3 pos2 = cloth.getPos(i*cloth.getSize() + j);
-				glm::vec3 pos3 = cloth.getPos((i-1)*cloth.getSize()+j);
+				glm::vec3 pos0 = cloth.getPos((i-1),(j-1));
+				glm::vec3 pos1 = cloth.getPos(i, (j - 1));
+				glm::vec3 pos2 = cloth.getPos(i, j);
+				glm::vec3 pos3 = cloth.getPos((i - 1), j);
 				//model = glm::translate(model, pos);
 				//GLfloat angle = 20.0f * i;
 				//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
@@ -257,11 +260,17 @@ int main(int argc, char *argv[])
 				vert[0 + 14] = pos2.x;
 				vert[1 + 14] = pos2.y;
 				vert[2 + 14] = pos2.z;
-				vert[0 + 21] = pos3.x;
-				vert[1 + 21] = pos3.y;
-				vert[2 + 21] = pos3.z;
+				vert[0 + 21] = pos0.x;
+				vert[1 + 21] = pos0.y;
+				vert[2 + 21] = pos0.z;
+				vert[0 + 28] = pos3.x;
+				vert[1 + 28] = pos3.y;
+				vert[2 + 28] = pos3.z;
+				vert[0 + 35] = pos2.x;
+				vert[1 + 35] = pos2.y;
+				vert[2 + 35] = pos2.z;
 				glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
-				glDrawArrays(GL_QUADS, 0, 4);
+				glDrawArrays(GL_TRIANGLES, 0, 6);
 			}
 		}
 		glBindVertexArray(0);
