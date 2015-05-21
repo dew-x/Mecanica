@@ -4,7 +4,7 @@
 #include "Particle.h"
 
 #define CSIZE 20
-#define CDIST 0.2f
+#define CDIST 0.1f
 const float CDIST2= CDIST*sqrt(2);
 
 const std::vector<std::vector<int> > streach = {
