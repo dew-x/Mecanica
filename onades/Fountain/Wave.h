@@ -7,9 +7,9 @@
 
 
 #define CSIZE 320
-#define CWAVE 200.96f
-#define CDIST 0.03125f
-const float CDIST2 = CDIST*sqrt(2);
+const float CDIST = 10.0f / CSIZE;
+const float CDIST2 = CDIST*CDIST;
+const float CWAVE = 1.96f / CDIST2;
 
 struct info{
 	float height;

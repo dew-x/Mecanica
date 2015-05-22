@@ -55,8 +55,9 @@ void Wave::moveWave(){
 
 void Wave::updateVelocity(float deltaT){
 	for (int i = 0; i < CSIZE*CSIZE; i++){
-		wave[i].velocity += deltaT * CWAVE * (wave[i].a->height + wave[i].b->height + wave[i].c->height + wave[i].d->height - 4 * wave[i].height);
-		wave[i].velocity *= 0.9999f;
+		info *tmp = &wave[i];
+		tmp->velocity += deltaT * CWAVE * (tmp->a->height + tmp->b->height + tmp->c->height + tmp->d->height - 4 * tmp->height);
+		tmp->velocity *= 0.9998f;
 	}
 	for (int i = 0; i < CSIZE*CSIZE; i++){
 		wave[i].height += deltaT * wave[i].velocity;

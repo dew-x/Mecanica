@@ -92,6 +92,8 @@ int main(int argc, char *argv[])
 	glEnable(GL_DEPTH_TEST);
 	unsigned last = SDL_GetTicks();
 	vector<GLfloat> vert(wave.size()*wave.size());
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+	glPointSize(10.0f);
 	while (true)
 	{
 		//glUniform3f(uniColor, (sin(SDL_GetTicks() / 200.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);

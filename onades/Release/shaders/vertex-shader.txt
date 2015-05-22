@@ -25,6 +25,7 @@ void main() {
 	vec4 bottom = vec4(0.0, 0.0, 1.0, 1.0);
 	
 	fragmentColor = vec4(mix(bottom, top, (tanh(height*20)+1)/2));
+	gl_PointSize = 3;
 }
 
 
