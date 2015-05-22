@@ -3,30 +3,33 @@
 #include <iostream>
 #include "Particle.h"
 
-#define CSIZE 20
+#define CSIZE 40
 #define CDIST 0.2f
 const float CDIST2= CDIST*sqrt(2);
 
-const std::vector<std::vector<int> > streach = {
-		{1,0},
-		{-1,0},
-		{0,1},
-		{0,-1}
-};
 
+const std::vector<std::vector<int> > streach = {
+{1,0},
+{-1,0},
+{0,1},
+{0,-1}
+};
+/*
 const std::vector<std::vector<int> > shear = {
-		{ 1, 1 },
-		{ -1, 1 },
-		{ 1, -1 },
-		{ -1, -1 }
+{ 1, 1 },
+{ -1, 1 },
+{ 1, -1 },
+{ -1, -1 }
 };
 
 const std::vector<std::vector<int> > bend = {
-		{ 2, 0 },
-		{ -2, 0 },
-		{ 0, 2 },
-		{ 0, -2 }
+{ 2, 0 },
+{ -2, 0 },
+{ 0, 2 },
+{ 0, -2 }
 };
+*/
+
 
 class Cloth {
 private:
@@ -41,7 +44,7 @@ public:
 	unsigned getSize() {
 		return CSIZE;
 	}
-	void updateForces();
+	void updateVelocity();
 	glm::vec3 getPos(unsigned i, unsigned j) { return particles[i*CSIZE+j].getCurrentPosition(); };
 	float kElastic;
 	float kDumping;

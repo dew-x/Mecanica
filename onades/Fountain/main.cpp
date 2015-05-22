@@ -88,11 +88,12 @@ int main(int argc, char *argv[])
 		vert.push_back(0.5);
 		vert.push_back(1.0f);
 	}
-	// sphere
-	Point center({ 0, 0, 0 });
-	Sphere sphere(center,2);
-	vector<glm::vec3> tmps = sphere.getVertexSphere(10);
-	for (unsigned i = 0; i < tmps.size(); ++i) {
+	/*
+		//sphere
+		Point center({ 0, 0, 0 });
+		Sphere sphere(center,2);
+		vector<glm::vec3> tmps = sphere.getVertexSphere(10);
+		for (unsigned i = 0; i < tmps.size(); ++i) {
 		vert.push_back(tmps[i].x);
 		vert.push_back(tmps[i].y);
 		vert.push_back(tmps[i].z);
@@ -100,16 +101,16 @@ int main(int argc, char *argv[])
 		vert.push_back(0.5);
 		vert.push_back(0.0);
 		vert.push_back(1.0);
-	}
-	// plane
-	Point p1(-0.5, 2, -3.5);
-	Point p2(-3.5, 3, -0.5);
-	Point p3(-0.5, 2.5, -0.5);
-	
-	
-	Triangle tri(p1, p2, p3);
-	vector<glm::vec3> tmpt=tri.getVertex();
-	for (unsigned i = 0; i < tmpt.size(); ++i) {
+		}
+		// plane
+		Point p1(-0.5, 2, -3.5);
+		Point p2(-3.5, 3, -0.5);
+		Point p3(-0.5, 2.5, -0.5);
+
+
+		Triangle tri(p1, p2, p3);
+		vector<glm::vec3> tmpt=tri.getVertex();
+		for (unsigned i = 0; i < tmpt.size(); ++i) {
 		vert.push_back(tmpt[i].x);
 		vert.push_back(tmpt[i].y);
 		vert.push_back(tmpt[i].z);
@@ -117,11 +118,11 @@ int main(int argc, char *argv[])
 		vert.push_back(0.0);
 		vert.push_back(0.0);
 		vert.push_back(1.0);
-	}
-	// cube
-	Cube cube({ -0.0f, 0.0f, -0.0f }, { 2.0f, 2.0f, 2.0f });
-	vector<glm::vec3> tmpc = cube.getQuads();
-	for (unsigned i = 0; i < tmpc.size(); ++i) {
+		}
+		// cube
+		Cube cube({ -0.0f, 0.0f, -0.0f }, { 2.0f, 2.0f, 2.0f });
+		vector<glm::vec3> tmpc = cube.getQuads();
+		for (unsigned i = 0; i < tmpc.size(); ++i) {
 		vert.push_back(tmpc[i].x);
 		vert.push_back(tmpc[i].y);
 		vert.push_back(tmpc[i].z);
@@ -129,7 +130,9 @@ int main(int argc, char *argv[])
 		vert.push_back(0.0);
 		vert.push_back(0.0);
 		vert.push_back(1.0);
-	}
+		}
+	*/
+	
 	for (unsigned i = 0; i < vert.size(); ++i) {
 		if (i % 7 == 0) cout << endl;
 		cout << vert[i] << " ";
@@ -202,14 +205,14 @@ int main(int argc, char *argv[])
 		unsigned current = SDL_GetTicks();
 		//cout <<"frame length "<< current - last << endl;
 		for (unsigned step = 0; step < (current - last); ++step) {
-			cloth.updateForces();
+			cloth.updateVelocity();
 			for (unsigned i = 0; i < cloth.getSize()*cloth.getSize(); ++i) {
 				Particle *p = cloth.getPart(i);
 				p->updateParticle(0.001f, Particle::UpdateMethod::EulerSemi);
 				p->cubeCollision(world);
-				p->cubeCollision(cube);
-				p->triangleCollision(tri);
-				p->sphereCollision(sphere);
+				//p->cubeCollision(cube);
+				//p->triangleCollision(tri);
+				//p->sphereCollision(sphere);
 			}
 		}
 		last = current;

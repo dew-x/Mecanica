@@ -23,19 +23,29 @@ void Cloth::reset(float height) {
 	particles = std::vector<Particle>(CSIZE*CSIZE);
 	for (unsigned i = 0; i < CSIZE; ++i) {
 		for (unsigned j = 0; j < CSIZE; ++j) {
-			particles[i*CSIZE+j].setPosition({ mapf(i, 0, CSIZE - 1, -(CSIZE*CDIST) / 2, (CSIZE*CDIST) / 2), height, mapf(j, 0, CSIZE - 1, -(CSIZE*CDIST) / 2, (CSIZE*CDIST) / 2) });//retocar
-			particles[i*CSIZE + j].setForce({ 0.0f, -9.8f, 0.0f });
+			particles[i*CSIZE+j].setPosition({ mapf(i, 0, CSIZE - 1, -(CSIZE*CDIST) / 2, (CSIZE*CDIST) / 2), height/2, mapf(j, 0, CSIZE - 1, -(CSIZE*CDIST) / 2, (CSIZE*CDIST) / 2) });//retocar
+			particles[i*CSIZE + j].setForce({ 0.0f, 0.0f, 0.0f });
 			particles[i*CSIZE + j].setBouncing(0.6f);
 		}
 	}
 }
 
-void Cloth::updateForces(){
+void Cloth::updateVelocity(){
 	for (int i = 0;i < CSIZE;i++){
 		for (int j = 0;j < CSIZE;j++){
-			//apply gravity force
-			particles[(i*CSIZE) + j].setForce({ 0, -9.8, 0 });
-			//streach
+			//particles[(i*CSIZE) + j].setForce({ 0, 0, 0 });
+			//creem un vector de vectors per guardar-nos els 4 veins de la particula en questio
+			glm::vec3 velocity = {0,0,0};
+			for (int x = 0; x < streach.size(); x++){
+				if (cinside((i + streach[x][0]), (j + streach[x][1]))){
+					velocity += particles[((i + streach[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
+				}
+				else{
+					velocity += particles[((i + streach[x][0]*-1)*CSIZE) + (j + streach[x][1]*-1)].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
+				}
+			}
+			/*
+				//streach
 			for (int x = 0; x < streach.size(); x++){
 				if (cinside((i+streach[x][0]),(j+streach[x][1]))){
 					float dist = glm::distance(particles[((i+streach[x][0])*CSIZE)+(j+streach[x][1])].getCurrentPosition(), particles[(i*CSIZE)+j].getCurrentPosition());
@@ -65,6 +75,7 @@ void Cloth::updateForces(){
 					particles[(i*CSIZE) + j].addForce(force);
 				}
 			}
+			*/
 		}
 	}
 }
