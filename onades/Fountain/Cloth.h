@@ -44,9 +44,10 @@ public:
 	unsigned getSize() {
 		return CSIZE;
 	}
-	void updateVelocity();
+	void updateVelocity(float deltaT);
 	glm::vec3 getPos(unsigned i, unsigned j) { return particles[i*CSIZE+j].getCurrentPosition(); };
 	float kElastic;
 	float kDumping;
+	float constOnades;
 };
 

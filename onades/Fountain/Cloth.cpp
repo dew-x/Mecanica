@@ -1,5 +1,8 @@
 #include "Cloth.h"
 
+int coord(int x, int y){
+	return x*CSIZE + y;
+}
 
 float mapf(float v, float a, float b, float c, float d) {
 	return ((v - a) / (b - a))*(d - c) + c;
@@ -12,6 +15,7 @@ bool cinside(int x,int y){
 Cloth::Cloth(){
 	kElastic = 200;
 	kDumping = 7;
+	constOnades = 1.4;
 	reset(5.0);
 }
 
@@ -30,7 +34,7 @@ void Cloth::reset(float height) {
 	}
 }
 
-void Cloth::updateVelocity(){
+void Cloth::updateVelocity(float deltaT){
 	for (int i = 0;i < CSIZE;i++){
 		for (int j = 0;j < CSIZE;j++){
 			//particles[(i*CSIZE) + j].setForce({ 0, 0, 0 });
@@ -38,12 +42,13 @@ void Cloth::updateVelocity(){
 			glm::vec3 velocity = {0,0,0};
 			for (int x = 0; x < streach.size(); x++){
 				if (cinside((i + streach[x][0]), (j + streach[x][1]))){
-					velocity += particles[((i + streach[x][0])*CSIZE) + (j + streach[x][1])].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
+					velocity += particles[coord(i + streach[x][0], j + streach[x][1])].getCurrentPosition();
 				}
 				else{
-					velocity += particles[((i + streach[x][0]*-1)*CSIZE) + (j + streach[x][1]*-1)].getVelocity() - particles[(i*CSIZE) + j].getVelocity();
+					velocity += particles[coord(i - streach[x][0], j - streach[x][1])].getCurrentPosition();
 				}
 			}
+			velocity -= (4.0f * particles[coord(i,j)].getCurrentPosition());
 			/*
 				//streach
 			for (int x = 0; x < streach.size(); x++){
@@ -79,3 +84,4 @@ void Cloth::updateVelocity(){
 		}
 	}
 }
+
