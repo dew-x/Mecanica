@@ -11,25 +11,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Cube.h"
-#include "Sphere.h"
-#include "Triangle.h"
-#include "Particle.h"
-#include "Corda.h"
-#include "Cloth.h"
+#include "Wave.h"
 using namespace std;
 
 // Window dimensions
 const GLuint WIDTH = 800, HEIGHT = 600;
-#define MAX_PARTICLES 2000
-struct bs{
-	unsigned begin, end;
-};
-
-enum mode {
-	FOUNTAIN,
-	CASCADE
-};
 
 float randClamp() {
 	return float(rand()) / RAND_MAX;
@@ -68,77 +54,8 @@ int main(int argc, char *argv[])
 	glewInit();
 	// Define the viewport dimensions
 	glViewport(0, 0, WIDTH, HEIGHT);
-	vector<GLfloat> vert = {
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
-	};
-	// world
-	Cube world({ -5, 0, -5 }, { 10, 10, 10 });
-	vector<glm::vec3> tmpw = world.getQuads();
-	for (unsigned i = 0; i < 12; ++i) {
-		vert.push_back(tmpw[i].x);
-		vert.push_back(tmpw[i].y);
-		vert.push_back(tmpw[i].z);
-		vert.push_back(0.0);
-		vert.push_back(0.0);
-		vert.push_back(0.5);
-		vert.push_back(1.0f);
-	}
-	/*
-		//sphere
-		Point center({ 0, 0, 0 });
-		Sphere sphere(center,2);
-		vector<glm::vec3> tmps = sphere.getVertexSphere(10);
-		for (unsigned i = 0; i < tmps.size(); ++i) {
-		vert.push_back(tmps[i].x);
-		vert.push_back(tmps[i].y);
-		vert.push_back(tmps[i].z);
-		vert.push_back(0.0);
-		vert.push_back(0.5);
-		vert.push_back(0.0);
-		vert.push_back(1.0);
-		}
-		// plane
-		Point p1(-0.5, 2, -3.5);
-		Point p2(-3.5, 3, -0.5);
-		Point p3(-0.5, 2.5, -0.5);
-
-
-		Triangle tri(p1, p2, p3);
-		vector<glm::vec3> tmpt=tri.getVertex();
-		for (unsigned i = 0; i < tmpt.size(); ++i) {
-		vert.push_back(tmpt[i].x);
-		vert.push_back(tmpt[i].y);
-		vert.push_back(tmpt[i].z);
-		vert.push_back(0.5);
-		vert.push_back(0.0);
-		vert.push_back(0.0);
-		vert.push_back(1.0);
-		}
-		// cube
-		Cube cube({ -0.0f, 0.0f, -0.0f }, { 2.0f, 2.0f, 2.0f });
-		vector<glm::vec3> tmpc = cube.getQuads();
-		for (unsigned i = 0; i < tmpc.size(); ++i) {
-		vert.push_back(tmpc[i].x);
-		vert.push_back(tmpc[i].y);
-		vert.push_back(tmpc[i].z);
-		vert.push_back(0.5);
-		vert.push_back(0.0);
-		vert.push_back(0.0);
-		vert.push_back(1.0);
-		}
-	*/
-	
-	for (unsigned i = 0; i < vert.size(); ++i) {
-		if (i % 7 == 0) cout << endl;
-		cout << vert[i] << " ";
-	}
 	//corda 
-	Cloth cloth;
+	Wave wave;
 	// particles
 	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
@@ -146,16 +63,14 @@ int main(int argc, char *argv[])
 	// vertex bind
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 1, GL_FLOAT, GL_FALSE, sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
 	glBindVertexArray(0); // Unbind VAO
 
 	// shadders
 	// Create and compile the vertex shader
 	std::string vContent = get_file_contents("./shaders/vertex-shader.txt");
+	std::cout << vContent << std::endl;
 	const char * vertexSource = vContent.c_str();
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexSource, NULL);
@@ -174,10 +89,9 @@ int main(int argc, char *argv[])
 	glAttachShader(shaderProgram, fragmentShader);
 	//glBindFragDataLocation(shaderProgram, 0, "outColor");
 	glLinkProgram(shaderProgram);
-	
-	mode spawnMode = FOUNTAIN;
 	glEnable(GL_DEPTH_TEST);
 	unsigned last = SDL_GetTicks();
+	vector<GLfloat> vert(wave.size()*wave.size());
 	while (true)
 	{
 		//glUniform3f(uniColor, (sin(SDL_GetTicks() / 200.0f) + 1.0f) / 2.0f, 0.0f, 0.0f);
@@ -194,27 +108,25 @@ int main(int argc, char *argv[])
 				else if (windowEvent.key.keysym.sym == SDLK_DOWN || windowEvent.key.keysym.sym == SDLK_s) ;
 				else if (windowEvent.key.keysym.sym == SDLK_RIGHT || windowEvent.key.keysym.sym == SDLK_d) ;
 				//else if (windowEvent.key.keysym.sym == SDLK_0) corda.reset(corda_mode(0));
-				else if (windowEvent.key.keysym.sym == SDLK_1) { 
-					cloth.reset(5); 
-				}/*else if (windowEvent.key.keysym.sym == SDLK_2) { 
-					corda.reset(corda_mode(2));
-				}*/
+				else if (windowEvent.key.keysym.sym == SDLK_0) { 
+					wave.reset(5); 
+				}
+				else if (windowEvent.key.keysym.sym == SDLK_1) {
+					wave.movePoint();
+				}
+				else if (windowEvent.key.keysym.sym == SDLK_2) {
+					wave.moveWave();
+				}
 			}
 		}
 		SDL_GL_SwapWindow(window);
 		unsigned current = SDL_GetTicks();
 		//cout <<"frame length "<< current - last << endl;
-		for (unsigned step = 0; step < (current - last); ++step) {
-			cloth.updateVelocity();
-			for (unsigned i = 0; i < cloth.getSize()*cloth.getSize(); ++i) {
-				Particle *p = cloth.getPart(i);
-				p->updateParticle(0.001f, Particle::UpdateMethod::EulerSemi);
-				p->cubeCollision(world);
-				//p->cubeCollision(cube);
-				//p->triangleCollision(tri);
-				//p->sphereCollision(sphere);
-			}
+		for (unsigned step = 0; step <= (current - last); ++step) {
+			wave.updateVelocity(0.001f);
 		}
+		int delay = 16 - int(current - last);
+		std::cout << current - last << std::endl;
 		last = current;
 		// Render
 		// Clear the colorbuffer
@@ -226,13 +138,17 @@ int main(int argc, char *argv[])
 		GLint modelLoc = glGetUniformLocation(shaderProgram, "modelMatrix");
 		GLint viewLoc = glGetUniformLocation(shaderProgram, "viewMatrix");
 		GLint projLoc = glGetUniformLocation(shaderProgram, "projectionMatrix");
+		GLint sizeLoc = glGetUniformLocation(shaderProgram, "size");
+		GLint distLoc = glGetUniformLocation(shaderProgram, "dist");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+		glUniform1f(distLoc, CDIST);
+		glUniform1i(sizeLoc, CSIZE);
 		//glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getViewMatrix()));
 		//glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjectionMatrix()));
 		glm::mat4 view;
 		GLfloat radius = 5.0f;
-		GLfloat camX = sin(SDL_GetTicks() / 1600.0f) * radius;
-		GLfloat camZ = cos(SDL_GetTicks() / 1600.0f) * radius;
+		GLfloat camX = sin(SDL_GetTicks() / 4000.0f) * radius;
+		GLfloat camZ = cos(SDL_GetTicks() / 4000.0f) * radius;
 		view = glm::lookAt(glm::vec3(camX, 10.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		// Projection 
 		glm::mat4 projection;
@@ -241,50 +157,17 @@ int main(int argc, char *argv[])
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 6, vert.size()/7);
-		// cloth.getSize()
-		for (unsigned i = 1; i < cloth.getSize(); ++i) {
-			for (unsigned j = 1; j < cloth.getSize(); ++j) {
-				glm::mat4 model;
-				glm::vec3 pos0 = cloth.getPos((i-1),(j-1));
-				glm::vec3 pos1 = cloth.getPos(i, (j - 1));
-				glm::vec3 pos2 = cloth.getPos(i, j);
-				glm::vec3 pos3 = cloth.getPos((i - 1), j);
-				//model = glm::translate(model, pos);
-				//GLfloat angle = 20.0f * i;
-				//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-				glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-				vert[0] = pos0.x;
-				vert[1] = pos0.y;
-				vert[2] = pos0.z;
-				vert[0 + 7] = pos1.x;
-				vert[1 + 7] = pos1.y;
-				vert[2 + 7] = pos1.z;
-				vert[0 + 14] = pos2.x;
-				vert[1 + 14] = pos2.y;
-				vert[2 + 14] = pos2.z;
-				vert[0 + 21] = pos0.x;
-				vert[1 + 21] = pos0.y;
-				vert[2 + 21] = pos0.z;
-				vert[0 + 28] = pos3.x;
-				vert[1 + 28] = pos3.y;
-				vert[2 + 28] = pos3.z;
-				vert[0 + 35] = pos2.x;
-				vert[1 + 35] = pos2.y;
-				vert[2 + 35] = pos2.z;
-				glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
-				glDrawArrays(GL_TRIANGLES, 0, 6);
-			}
-		}
+		wave.loadVBO(vert);
+		glBufferData(GL_ARRAY_BUFFER, vert.size()*sizeof(vert[0]), &vert[0], GL_STATIC_DRAW);
+		glDrawArrays(GL_POINTS, 0, vert.size());
 		glBindVertexArray(0);
-		
+		if (delay>0) SDL_Delay(delay);
 	}
 	glDeleteProgram(shaderProgram);
 	glDeleteShader(fragmentShader);
 	glDeleteShader(vertexShader);
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
-	
 	SDL_DestroyWindow(window);
 	SDL_GL_DeleteContext(context);
 	SDL_Quit();

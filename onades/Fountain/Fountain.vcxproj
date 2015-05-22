@@ -84,7 +84,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Cloth.cpp" />
     <ClCompile Include="Corda.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Line.cpp" />
@@ -98,7 +97,6 @@
     <ClCompile Include="Wave.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cloth.h" />
     <ClInclude Include="Corda.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="functions.h" />

@@ -42,20 +42,29 @@ void Wave::reset(float height){
 
 void Wave::movePoint(){
 	int x = rand() % (CSIZE*CSIZE);
-	wave[x].height = 5;
+	wave[x].height = 15;
 }
 
 void Wave::moveWave(){
 	for (int i = 0; i < CSIZE; i++){
-		wave[coord(i, 0)].height = 5;
+		for (int j = 0; j < CSIZE / 100; ++j) {
+			wave[coord(i, j)].height = (CSIZE / 100 ) - j;
+		}
 	}
 }
 
 void Wave::updateVelocity(float deltaT){
 	for (int i = 0; i < CSIZE*CSIZE; i++){
 		wave[i].velocity += deltaT * CWAVE * (wave[i].a->height + wave[i].b->height + wave[i].c->height + wave[i].d->height - 4 * wave[i].height);
+		wave[i].velocity *= 0.9999f;
 	}
 	for (int i = 0; i < CSIZE*CSIZE; i++){
 		wave[i].height += deltaT * wave[i].velocity;
+	}
+}
+
+void Wave::loadVBO(std::vector<GLfloat> &vbo) {
+	for (int i = 0; i < CSIZE*CSIZE; i++){
+		vbo[i] = wave[i].height;
 	}
 }

@@ -1,11 +1,14 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <GL\glew.h>
+#include <SDL\SDL.h>
+#include <SDL\SDL_opengl.h>
 
 
-#define CSIZE 40
-#define CWAVE 1.96f
-#define CDIST 0.2f
+#define CSIZE 320
+#define CWAVE 200.96f
+#define CDIST 0.03125f
 const float CDIST2 = CDIST*sqrt(2);
 
 struct info{
@@ -32,5 +35,7 @@ public:
 	void movePoint();
 	void moveWave();
 	void updateVelocity(float deltaT);
+	int size() { return CSIZE; }
+	void loadVBO(std::vector<GLfloat> &vbo);
 };
 
